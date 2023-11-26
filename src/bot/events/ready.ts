@@ -4,7 +4,7 @@ import { readFile, unlink } from "fs";
 
 export default async (guardsman: Guardsman) =>
 {
-    guardsman.log.info("RaidManager ready.")
+    guardsman.log.info("Guardsman ready.")
     guardsman.state = GuardsmanState.ONLINE;
 
     // check for reboot file
@@ -34,7 +34,7 @@ export default async (guardsman: Guardsman) =>
         status: "online",
         activities: [
             {
-                name: `RaidManager 5`,
+                name: `in the tunnels`,
                 type: ActivityType.Playing,
             }
         ]

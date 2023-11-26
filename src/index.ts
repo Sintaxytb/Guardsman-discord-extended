@@ -1,7 +1,7 @@
 import knex, { Knex } from "knex";
 import Bot from "./bot/index.js";
 import logger from "./util/log.js";
-import trello from "./util/trello.js";
+// import trello from "./util/trello.js";
 import { config } from "dotenv";
 import Noblox from "noblox.js";
 import API from "./api/index.js";
@@ -20,7 +20,7 @@ export enum GuardsmanState
 class GuardsmanObject {
     state: GuardsmanState = GuardsmanState.OFFLINE
     log;
-    trello: trello;
+    // trello: trello;
     mainBoard?: Board;
     debug = process.argv.includes("--debug")
     environment = config().parsed || {};
@@ -33,7 +33,7 @@ class GuardsmanObject {
 
     constructor()
     {
-        this.log = new logger("RaidManager", this);
+        this.log = new logger("Guardsman", this);
 
         const argv = process.argv;
         if (argv.includes("--ci"))
@@ -52,13 +52,13 @@ class GuardsmanObject {
         this.log.info("Initializing Guardsman...");
         this.state = GuardsmanState.STARTING;
 
-        this.trello = new trello(this.environment.TRELLO_APP_KEY, this.environment.TRELLO_TOKEN);
-        if (!this.ci)
-        {
-            this.trello.getBoard(this.environment.TRELLO_BOARD_ID).then(async board => {
-                this.mainBoard = board;
-            });
-        }
+        // this.trello = new trello(this.environment.TRELLO_APP_KEY, this.environment.TRELLO_TOKEN);
+        // if (!this.ci)
+        // {
+        //     this.trello.getBoard(this.environment.TRELLO_BOARD_ID).then(async board => {
+        //         this.mainBoard = board;
+        //     });
+        // }
 
         this.log.debug("Connecting to database...")
         this.database = knex({

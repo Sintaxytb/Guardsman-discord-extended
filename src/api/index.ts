@@ -31,7 +31,7 @@ export default class API
             .then(() =>
             {
                 this.server.get("/", (_, res) => {
-                    res.json({ success: true, status: "RaidManager API online and ready." })
+                    res.json({ success: true, status: "Guardsman REST API online and ready." })
                 })
             })
             .then(() =>
