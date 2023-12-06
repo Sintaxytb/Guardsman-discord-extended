@@ -10,6 +10,7 @@ export default class Bot extends Client
 {
     guardsman: Guardsman;
     REST: REST = new REST();
+    apiCommands: SlashCommandBuilder[] = [];
 
     constructor(guardsman: Guardsman)
     {
@@ -141,6 +142,8 @@ export default class Bot extends Client
                             slashCommand.addSubcommand(subCommand);
                         }
                     }
+
+                    this.apiCommands.push(slashCommand);
 
                     parsedCommands.push(slashCommand.toJSON())
                 }

@@ -4,8 +4,8 @@ declare interface IUser
     username: string
     roblox_id: string
     discord_id: string
-    password: string
-    remember_token: string
+    password?: string
+    remember_token?: string
     roles: string
     created_at?: Date
     updated_at?: Date

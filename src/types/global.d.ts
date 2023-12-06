@@ -11,6 +11,7 @@ declare interface ICommand
     guardsman: Guardsman;
 
     execute(interaction: ChatInputCommandInteraction<"cached">) : Promise<void>;
+    autocomplete?(interaction: AutocompleteInteraction<"cached">) : Promise<void>;
 }
 
 declare interface IEvent 

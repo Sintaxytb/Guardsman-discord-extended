@@ -99,4 +99,28 @@ export default async (guardsman: Guardsman, interaction: Interaction<"cached">) 
             }
         }
     }
+
+    else if (interaction.isAutocomplete()) {
+        const sentCommand = interaction.commandName;
+        const options = interaction.options;
+        let command: ICommand | undefined;
+
+        guardsman.bot.commands.list.find(category =>
+            {
+                command = category.find(com => com.name == sentCommand)
+                return command;
+            })
+
+        if (!command) return;
+
+        const subCommand = options.getSubcommand(false);
+        if (subCommand)
+        {
+            command = command.subcommands?.find(subCom => subCom.name == subCommand);
+        }
+
+        if (!command || !command.autocomplete) return;
+
+        await command.autocomplete(interaction);
+    }
 }
