@@ -1,8 +1,9 @@
-import { ChatInputCommandInteraction, Client, Collection, IntentsBitField, REST, RESTPostAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder, SlashCommandSubcommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client, Collection, IntentsBitField, REST, RESTPostAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder, SlashCommandSubcommandBuilder, User } from "discord.js";
 import { Guardsman } from "../index.js";
 import { readdir, lstat } from "fs/promises";
 import * as url from 'url';
 import * as process from "process";
+import axios, { AxiosInstance } from "axios";
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -11,6 +12,8 @@ export default class Bot extends Client
     guardsman: Guardsman;
     REST: REST = new REST();
     apiCommands: SlashCommandBuilder[] = [];
+    guardsmanAPI: AxiosInstance;
+    clientGUID: string = "";
 
     constructor(guardsman: Guardsman)
     {
@@ -39,6 +42,12 @@ export default class Bot extends Client
         });
 
         this.guardsman = guardsman;
+        this.guardsmanAPI = axios.create({
+            baseURL: this.guardsman.environment.GUARDSMAN_API_URL,
+            headers: {
+                Authorization: this.guardsman.environment.GUARDSMAN_API_TOKEN
+            }
+        })
 
         this.REST.setToken(this.guardsman.environment.DISCORD_BOT_TOKEN);
         this.commands.push().then(() => { this.guardsman.log.debug("Commands pushed.") });
@@ -194,5 +203,37 @@ export default class Bot extends Client
                 this.on(event.name, event.function);
             }
         }
+    }
+
+    sendGuardsmanStartupPing = async () => {
+        if (!this.user) return;
+
+        const clientData = await this.guardsmanAPI.post(`discord/bot/startup`, {
+            client_id: this.user.id
+        });
+
+        this.clientGUID = clientData.data.client_guid;
+    }
+
+    sendGuardsmanClientPing = async () => {
+        if (!this.user) return;
+        if (this.clientGUID == "") return this.sendGuardsmanStartupPing();
+
+        const clientData = await this.guardsmanAPI.patch(`discord/bot/checkin`, {
+            client_guid: this.clientGUID,
+            client_id: this.user.id
+        });
+    }
+
+    checkGuardsmanPermissionNode = async (user: User, node: GuardsmanPermissionNode) : Promise<boolean> => {
+        let userData: IAPIUser
+
+        try {
+            userData = (await this.guardsmanAPI.get(`discord/user/by-discord/${user.id}`)).data
+        } catch (error) {
+            return false;
+        }
+       
+        return userData.permissions.includes(node);
     }
 }

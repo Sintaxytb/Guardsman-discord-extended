@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rm -rf ./build && tsc && mkdir build/src/api/middleware",
     "ci": "npm run build && node build/src/index.js --ci",
-    "dev": "npm run build && node build/src/index.js"
+    "dev": "node --loader ts-node/esm src/index.ts"
   },
   "author": "",
   "license": "ISC",

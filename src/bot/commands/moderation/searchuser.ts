@@ -1,8 +1,8 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandStringOption } from "discord.js";
 import { Guardsman } from "index";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 
-export default class TestCommand implements ICommand 
+export default class SearchUserCommand implements ICommand 
 {
     name: Lowercase<string> = "searchuser";
     description: string = "Allows guild moderators to search for a user's Guardsman data";
@@ -27,11 +27,25 @@ export default class TestCommand implements ICommand
         await interaction.deferReply();
 
         const query = interaction.options.getString("query", true);
-        const userData: AxiosResponse<IUser> = await axios.get(`${this.guardsman.environment.GUARDSMAN_API_URL}/api/discord/user/${query}`, {
-            headers: {
-                "Authorization": this.guardsman.environment.GUARDSMAN_API_TOKEN
-            }
-        });
+        let userData: AxiosResponse<IUser>
+        // const userData: AxiosResponse<IUser> = await this.guardsman.bot.guardsmanAPI.get(`api/discord/user/${query}`);
+
+        try {
+            userData = await this.guardsman.bot.guardsmanAPI.get(`discord/user/by-username/${query}`);
+        } catch (error) {
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman API Error")
+                        .setDescription(`An error occurred whilst communicating with the Guardsman API. ${error}`)
+                        .setColor(Colors.Red)
+                        .setFooter({ text: "Guardsman API" })
+                        .setTimestamp()
+                ]
+            })
+            
+            return;
+        }
 
         await interaction.editReply({
             embeds: [
@@ -84,12 +98,11 @@ export default class TestCommand implements ICommand
     async autocomplete(interaction: AutocompleteInteraction<"cached">): Promise<void> {
         const query = interaction.options.getString("query", true);
         if (query == "") return;
-        const searchData = await axios.get(`${this.guardsman.environment.GUARDSMAN_API_URL}/api/discord/search/${query}`, {
-            headers: {
-                "Authorization": this.guardsman.environment.GUARDSMAN_API_TOKEN
-            }
-        });
-
-        interaction.respond(searchData.data);
+        
+        this.guardsman.bot.guardsmanAPI.get(`discord/search/${query}`)
+            .then(response => {
+                interaction.respond(response.data);
+            })
+            .catch(error => {})
     }
 }

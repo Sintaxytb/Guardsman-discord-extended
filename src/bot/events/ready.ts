@@ -7,6 +7,10 @@ export default async (guardsman: Guardsman) =>
     guardsman.log.info("Guardsman ready.")
     guardsman.state = GuardsmanState.ONLINE;
 
+    // set ping interval
+    guardsman.bot.sendGuardsmanStartupPing();
+    setInterval(guardsman.bot.sendGuardsmanClientPing, 30E3);
+
     // check for reboot file
     try {
         readFile(".rm-rebootfile", async (err, data) =>

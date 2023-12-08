@@ -11,6 +11,23 @@ declare interface IUser
     updated_at?: Date
 }
 
+declare interface IAPIUser
+{
+    id: number
+    username: string
+    roblox_id: string
+    discord_id: string
+    roles: string
+    game_data: string
+    rollback_points: string
+    roles: string
+    permissions: string
+    role: IRole
+    position: number
+    created_at?: Date
+    updated_at?: Date
+}
+
 declare interface IRole
 {
     name: string
