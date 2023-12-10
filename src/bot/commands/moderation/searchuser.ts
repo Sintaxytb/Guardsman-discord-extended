@@ -81,7 +81,7 @@ export default class SearchUserCommand implements ICommand
 
                         {
                             name: "Roles",
-                            value: JSON.parse(userData.data.roles).join(", "),
+                            value: `${userData.data.roles}`,
                             inline: true
                         },
 

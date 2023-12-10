@@ -236,4 +236,28 @@ export default class Bot extends Client
        
         return userData.permissions.includes(node);
     }
+
+    getGuardsmanPermissionLevel = async (user: User) : Promise<number> => {
+        let userData: IAPIUser
+
+        try {
+            userData = (await this.guardsmanAPI.get(`discord/user/by-discord/${user.id}`)).data
+        } catch (error) {
+            return 0;
+        }
+       
+        return userData.position;
+    }
+
+    getGuardsmanId = async (user: User) : Promise<number> => {
+        let userData: IAPIUser
+
+        try {
+            userData = (await this.guardsmanAPI.get(`discord/user/by-discord/${user.id}`)).data
+        } catch (error) {
+            return 0;
+        }
+       
+        return userData.id;
+    }
 }

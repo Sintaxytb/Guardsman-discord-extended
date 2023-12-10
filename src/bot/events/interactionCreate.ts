@@ -79,7 +79,7 @@ export default async (guardsman: Guardsman, interaction: Interaction<"cached">) 
         }
         catch (error)
         {
-            const replied = interaction.replied;
+            const replied = interaction.replied || interaction.deferred;
             const replyData = {
                 embeds: [
                     new EmbedBuilder()

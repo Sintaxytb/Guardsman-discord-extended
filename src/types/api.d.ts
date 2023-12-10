@@ -35,4 +35,7 @@ declare type GuardsmanPermissionNode =
   | "game:canLockServer"
   | "game:canUnban"
   
-  
+declare interface IAPIPunishmentData {
+    success: boolean
+    id: string
+}

@@ -1,4 +1,5 @@
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandStringOption } from "discord.js";
+import axios, { AxiosResponse } from "axios";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandIntegerOption, SlashCommandStringOption } from "discord.js";
 import { Guardsman } from "index";
 
 export default class GlobalBanCommand implements ICommand 
@@ -11,7 +12,17 @@ export default class GlobalBanCommand implements ICommand
         new SlashCommandStringOption()
             .setName("id")
             .setDescription("The Guardsman ID of the user to ban (To find, run /searchuser)")
-            .setRequired(true)
+            .setRequired(true),
+
+        new SlashCommandStringOption()
+            .setName("reason")
+            .setDescription("The reason for the ban")
+            .setRequired(false),
+
+        new SlashCommandIntegerOption()
+            .setName("expires")
+            .setDescription("When the ban should expire (UNIX Timestamp)")
+            .setRequired(false)
     ]
 
     constructor(guardsman: Guardsman) 
@@ -24,9 +35,11 @@ export default class GlobalBanCommand implements ICommand
         await interaction.deferReply();
 
         const guardsmanId = interaction.options.getString("id", true);
+        const banReason = interaction.options.getString("reason", false);
+        const banExpiry = interaction.options.getInteger("expires", false);
+
+        const moderatorId = await this.guardsman.bot.getGuardsmanId(interaction.user);
         const canGlobalBan = await this.guardsman.bot.checkGuardsmanPermissionNode(interaction.user, "moderate:moderate");
-        
-        console.log("here");
 
         if (!canGlobalBan) {
             await interaction.editReply({
@@ -41,8 +54,137 @@ export default class GlobalBanCommand implements ICommand
             });
 
             return;
+        };
+
+        let userData: AxiosResponse<IAPIUser>;
+
+        try {
+            userData = await this.guardsman.bot.guardsmanAPI.get(`discord/user/${guardsmanId}`);
+        } catch (error) {
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman API Error")
+                        .setDescription(`An error occurred whilst communicating with the Guardsman API. ${error}`)
+                        .setColor(Colors.Red)
+                        .setFooter({ text: "Guardsman API" })
+                        .setTimestamp()
+                ]
+            })
+            
+            return;
         }
 
-        await interaction.editReply("WIP Command, please check back soon!");
+        const executingPosition = await this.guardsman.bot.getGuardsmanPermissionLevel(interaction.member.user);
+        if (userData.data.position >= executingPosition) {
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman Moderation")
+                        .setDescription(`Your permission level is not high enough to global ban ${userData.data.username}. (${executingPosition}=>${userData.data.position})`)
+                        .setColor(Colors.Red)
+                        .setFooter({ text: "Guardsman API" })
+                        .setTimestamp()
+                ]
+            })
+            
+            return;
+        }
+
+        const banData: AxiosResponse<IAPIPunishmentData> = await this.guardsman.bot.guardsmanAPI.post(`discord/user/${guardsmanId}/punishment`, {
+            type: "Global Ban",
+            reason: banReason || "No reason provided.",
+            expires: banExpiry,
+            evidence: [],
+            moderator: moderatorId
+        });
+
+        // send ban dm to user
+        try {
+            const user = await this.guardsman.bot.users.cache.find(user => user.id === userData.data.discord_id);
+            if (!user) throw new Error("User could not be messaged.");
+
+            await user.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman Moderation")
+                        .setDescription("You have been **globally banned** from ALL Guardsman-controlled guilds, and ALL Guardsman-controlled experiences.")
+                        .setColor(Colors.Red)
+                        .setFooter({ text: "Guardsman Moderation"})
+                        .setTimestamp()
+                        .addFields(
+                            {
+                                name: "REF ID",
+                                value: banData.data.id
+                            },
+
+                            {
+                                name: "Reason",
+                                value: banReason || "No Reason Provided"
+                            },
+
+                            {
+                                name: "Expires",
+                                value: (banExpiry != null && `<t:${banExpiry}>` || "Never")
+                            }
+                        )
+                ]
+            })
+        } catch (error) {
+            await interaction.channel?.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman Moderation")
+                        .setDescription(`Failed to send ban DM. ${error}`)
+                        .setColor(Colors.Orange)
+                        .setFooter({ text: "Guardsman API" })
+                        .setTimestamp()
+                ]
+            });
+        }
+
+        const guilds = this.guardsman.bot.guilds.cache.values();
+        const errors = [];
+        for (const guild of guilds) {
+            try {
+                await guild.bans.create(userData.data.discord_id, {
+                    reason: (banReason || `No reason provided.`) + `; Executed by: ${interaction.member.user.username}`
+                });
+            } catch (error) {
+                errors.push(error);
+            }
+        }
+
+        await interaction.editReply({
+            embeds: [
+                new EmbedBuilder()
+                        .setTitle("Guardsman Moderation")
+                        .setDescription(`${userData.data.username} has been globally banned from all Guardsman-controlled guilds and experiences.`)
+                        .setColor(Colors.Red)
+                        .setFooter({ text: "Guardsman Moderation"})
+                        .setTimestamp()
+                        .addFields(
+                            {
+                                name: "REF ID",
+                                value: banData.data.id
+                            },
+
+                            {
+                                name: "Reason",
+                                value: banReason || "No Reason Provided"
+                            },
+
+                            {
+                                name: "Expires",
+                                value: (banExpiry != null && `<t:${banExpiry}>` || "Never")
+                            },
+
+                            {
+                                name: "Errors",
+                                value: errors.length > 0 && errors.join(",\n") || "None."
+                            }
+                        )
+            ]
+        })
     }
 }
