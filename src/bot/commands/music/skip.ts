@@ -21,7 +21,7 @@ export default class SkipCommand implements ICommand
 
         if (!interaction.member.voice.channel) {
             await interaction.editReply({
-                content: "not in channel"
+                content: "You must connect to a voice channel before running music commands!"
             });
 
             return;
@@ -32,7 +32,7 @@ export default class SkipCommand implements ICommand
         const queue = this.guardsman.bot.musicController.queues.get(interaction.guild);
         if (!queue || !queue.currentTrack) {
             await interaction.editReply({
-                content: "no queue"
+                content: "The queue is empty!"
             });
 
             return;

@@ -26,7 +26,7 @@ export default class PlayCommand implements ICommand
 
         if (!interaction.member.voice.channel) {
             await interaction.editReply({
-                content: "not in channel"
+                content: "You must connect to a voice channel before running music commands!"
             });
 
             return;

@@ -4,8 +4,8 @@ import { Guardsman } from "index";
 
 export default class PauseCommand implements ICommand 
 {
-    name: Lowercase<string> = "resume";
-    description: string = "Resumes the current song.";
+    name: Lowercase<string> = "np";
+    description: string = "Shows the current song.";
     guardsman: Guardsman;
 
     constructor(guardsman: Guardsman) 
@@ -36,29 +36,15 @@ export default class PauseCommand implements ICommand
             return;
         }
 
-        if (!queue.node.isPaused()) {
-            await interaction.editReply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Guardsman Music")
-                        .setDescription(`The queue is not paused!`)
-                        .setColor(Colors.Blurple)
-                        .setFooter({ text: "Guardsman Discord" })
-                        .setTimestamp()
-                ]
-            });
-
-            return;
-        }
-
-        await queue.node.setPaused(false);
+        const currentTrack = queue.currentTrack;
 
         await interaction.editReply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Guardsman Music")
-                    .setDescription(`Successfully ${queue.node.isPaused() && "paused" || "unpaused"} the current song!`)
+                    .setDescription(`Current Song: ${currentTrack.title} - ${currentTrack.author}\n**Length: ${currentTrack.duration}**`)
                     .setColor(Colors.Blurple)
+                    .setThumbnail(currentTrack.thumbnail)
                     .setFooter({ text: "Guardsman Discord" })
                     .setTimestamp()
             ]
