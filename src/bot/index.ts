@@ -4,6 +4,7 @@ import { readdir, lstat } from "fs/promises";
 import * as url from 'url';
 import * as process from "process";
 import axios, { AxiosInstance } from "axios";
+import { Player } from "discord-player";
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -14,6 +15,12 @@ export default class Bot extends Client
     apiCommands: SlashCommandBuilder[] = [];
     guardsmanAPI: AxiosInstance;
     clientGUID: string = "";
+    musicController = new Player(this, {
+        ytdlOptions: {
+            quality: "highestaudio",
+            highWaterMark: 1 << 25
+        }
+    });
 
     constructor(guardsman: Guardsman)
     {
@@ -47,7 +54,9 @@ export default class Bot extends Client
             headers: {
                 Authorization: this.guardsman.environment.GUARDSMAN_API_TOKEN
             }
-        })
+        });
+
+        this.musicController.extractors.loadDefault();
 
         this.REST.setToken(this.guardsman.environment.DISCORD_BOT_TOKEN);
         this.commands.push().then(() => { this.guardsman.log.debug("Commands pushed.") });
