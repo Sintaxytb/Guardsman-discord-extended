@@ -38,6 +38,24 @@ export default class SkipCommand implements ICommand
             return;
         }
 
+        if (interaction.member.voice.channel.members.size == 2) {
+            await queue.removeTrack(queue.currentTrack);
+            await queue.node.skip();
+
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman Music")
+                        .setDescription(`Successfully skipped the current song!`)
+                        .setColor(Colors.Blurple)
+                        .setFooter({ text: "Guardsman Discord" })
+                        .setTimestamp()
+                ]
+            });
+
+            return;
+        }
+
         if (!skipVotes[interaction.guild.id] || skipVotes[interaction.guild.id].channelId != interaction.channel.id) {
             skipVotes[interaction.guild.id] = {
                 channelId: interaction.channel.id,

@@ -39,30 +39,50 @@ export default class PlayCommand implements ICommand
 
         const results = await this.guardsman.bot.musicController.search(query, {
             requestedBy: interaction.user,
-            searchEngine: QueryType.AUTO_SEARCH
+            searchEngine: QueryType.AUTO,
         });
 
-        if (results.tracks.length === 0) {
+        if (results.tracks.length === 0 && !results.playlist) {
             await interaction.editReply("No tracks could be found. Check the query and try again.");
             return;
         }
 
         const track = results.tracks[0];
-        await queue.addTrack(track);
+        const playlist = results.playlist;
+        
+        if (playlist) {
+            for (const pTrack of playlist.tracks) {
+                await queue.addTrack(pTrack);
+            }
+
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman Music")
+                        .setDescription(`Successfully added ${playlist.tracks.length} tracks to the queue!`)
+                        .setColor(Colors.Blurple)
+                        .setThumbnail(track.thumbnail)
+                        .setFooter({ text: "Guardsman Discord" })
+                        .setTimestamp()
+                ]
+            });
+        } else {
+            await queue.addTrack(track);
+
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman Music")
+                        .setDescription(`Successfully added \`${track.title} - ${track.author}\` to the queue!`)
+                        .setColor(Colors.Blurple)
+                        .setThumbnail(track.thumbnail)
+                        .setFooter({ text: "Guardsman Discord" })
+                        .setTimestamp()
+                ]
+            });
+        }
 
         const firstTrack = queue.tracks.at(0);
         if (!queue.isPlaying() && firstTrack) await queue.play(firstTrack);
-
-        await interaction.editReply({
-            embeds: [
-                new EmbedBuilder()
-                    .setTitle("Guardsman Music")
-                    .setDescription(`Successfully added \`${track.title} - ${track.author}\` to the queue!`)
-                    .setColor(Colors.Blurple)
-                    .setThumbnail(track.thumbnail)
-                    .setFooter({ text: "Guardsman Discord" })
-                    .setTimestamp()
-            ]
-        });
     }
 }
