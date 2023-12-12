@@ -102,8 +102,10 @@ export default async (guardsman: Guardsman, request: Request, response: Response
           })
         })
     })
-    .catch(_ =>
+    .catch(error =>
     {
+      console.log(error);
+
       return response.json({
         success: "false",
         status: "OAuth2 code is invalid. Please try again."

@@ -84,7 +84,7 @@ class GuardsmanObject {
         this.roblox = Noblox;
         if (!this.ci)
         {
-            this.roblox.setCookie(this.environment.ROBLOX_COOKIE).then(_ => console.log);
+        //    this.roblox.setCookie(this.environment.ROBLOX_COOKIE).then(_ => console.log);
         }
 
         // this.log.debug("Running database migrations...");
