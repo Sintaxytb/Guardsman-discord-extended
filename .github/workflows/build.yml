@@ -36,11 +36,11 @@ jobs:
           collation server: utf8mb4_unicode_ci
           mariadb version: latest
           # MYSQL_DATABASE - name for the default database that is created
-          mysql database: RM5_CI # optional, default is
+          mysql database: GDE_CI # optional, default is
           # MYSQL_USER - create the specified user with superuser power for created database
-          mysql user: RM5_CI  # optional, default is
+          mysql user: GDE_CI  # optional, default is
           # MYSQL_PASSWORD - specified superuser password which user is power for created database
-          mysql password: RM5_CI # optional, default is
+          mysql password: GDE_CI # optional, default is
       - run: npm ci
       - run: cp .env.example .env
       - run: npm run build

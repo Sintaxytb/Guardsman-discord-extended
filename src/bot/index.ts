@@ -4,7 +4,7 @@ import { readdir, lstat } from "fs/promises";
 import * as url from 'url';
 import * as process from "process";
 import axios, { AxiosInstance } from "axios";
-import { Player } from "discord-player";
+import { Player, Track } from "discord-player";
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -21,6 +21,7 @@ export default class Bot extends Client
             highWaterMark: 1 << 25
         }
     });
+    skipVotes : { [guildId: string]: { track: Track, channelId: string, voted: string[], needed: number } } = {};
 
     constructor(guardsman: Guardsman)
     {

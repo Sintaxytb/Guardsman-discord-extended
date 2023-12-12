@@ -1,8 +1,6 @@
 import { QueryType, Track } from "discord-player";
 import { ChatInputCommandInteraction, Colors, EmbedBuilder, SlashCommandStringOption } from "discord.js";
-import { Guardsman } from "index";
-
-const skipVotes : { [guildId: string]: { track: Track, channelId: string, voted: string[], needed: number } } = {};
+import { Guardsman } from "index"; 
 
 export default class SkipCommand implements ICommand 
 {
@@ -17,6 +15,9 @@ export default class SkipCommand implements ICommand
 
     async execute(interaction: ChatInputCommandInteraction<"cached">): Promise<void>
     {
+        const skipVotes = this.guardsman.bot.skipVotes;
+        const guildId = interaction.guild.id;
+
         await interaction.deferReply();
 
         if (!interaction.member.voice.channel) {
@@ -38,7 +39,9 @@ export default class SkipCommand implements ICommand
             return;
         }
 
+        // It's 1 person with the bot in VC
         if (interaction.member.voice.channel.members.size == 2) {
+            delete skipVotes[guildId];
             await queue.removeTrack(queue.currentTrack);
             await queue.node.skip();
 
@@ -56,28 +59,27 @@ export default class SkipCommand implements ICommand
             return;
         }
 
-        if (!skipVotes[interaction.guild.id] || skipVotes[interaction.guild.id].channelId != interaction.channel.id) {
-            skipVotes[interaction.guild.id] = {
+        if (!skipVotes[guildId] || skipVotes[guildId].channelId != interaction.channel.id) {
+            const neededVotes = Math.floor(interaction.member.voice.channel.members.size * 0.75)
+            skipVotes[guildId] = {
                 channelId: interaction.channel.id,
                 track: queue.currentTrack,
                 voted: [interaction.member.id],
-                needed: Math.floor(interaction.member.voice.channel.members.size * 0.75),
+                needed: neededVotes,
             }
-
-            const voteData = skipVotes[interaction.guild.id];
 
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Guardsman Music")
-                        .setDescription(`Voted to skip the current song! (${voteData.voted.length}/${voteData.needed})`)
+                        .setDescription(`Voted to skip the current song! (1/${neededVotes})`)
                         .setColor(Colors.Blurple)
                         .setFooter({ text: "Guardsman Discord" })
                         .setTimestamp()
                 ]
             });
         } else {
-            const voteData = skipVotes[interaction.guild.id];
+            const voteData = skipVotes[guildId];
             if (voteData.voted.includes(interaction.member.id)) {
                 await interaction.editReply({
                     embeds: [

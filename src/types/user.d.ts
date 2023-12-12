@@ -71,10 +71,6 @@ declare type RoleData<T> =
     type: string
 } & T
 
-declare type EventImportData = {
-    [pointValue: number]: string[]
-}
-
 declare type Userdata =
 {
     user_id: string,
