@@ -1,1 +1,1 @@
-<svg><use href="https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-discord-extended/badges/master/pipeline.svg"></use></svg>
+![1702528067173](image/README/1702528067173.png)
