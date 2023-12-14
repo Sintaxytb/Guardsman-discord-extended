@@ -1,5 +1,5 @@
 <div align="center">
-    <img style="width: 25px" src="image/README/1702528067173.png" />
+    <img style="width: 100px" src="image/README/1702528067173.png" />
     <h3 style="text-align: center">Guardsman</h3>
 </div
 
