@@ -7,7 +7,6 @@ export default class SearchUserCommand implements ICommand
     name: Lowercase<string> = "searchuser";
     description: string = "Allows guild moderators to search for a user's Guardsman data";
     guardsman: Guardsman;
-    defaultMemberPermissions = PermissionFlagsBits.ModerateMembers
 
     options = [
         new SlashCommandStringOption()
@@ -25,6 +24,23 @@ export default class SearchUserCommand implements ICommand
     async execute(interaction: ChatInputCommandInteraction<"cached">): Promise<void>
     {
         await interaction.deferReply();
+
+        const canGlobalBan = await this.guardsman.bot.checkGuardsmanPermissionNode(interaction.user, "moderate:search");
+
+        if (!canGlobalBan) {
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman API")
+                        .setDescription("You do not have permission to `moderate:search`")
+                        .setColor(Colors.Red)
+                        .setFooter({ text: "Guardsman API" })
+                        .setTimestamp()
+                ]
+            });
+
+            return;
+        };
 
         const query = interaction.options.getString("query", true);
         let userData: AxiosResponse<IUser>
