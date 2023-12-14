@@ -48,3 +48,8 @@ For verification to work, the following values must be set:
 - `GUARDSMAN_API_URL`
 - `GUARDSMAN_API_TOKEN`
 - `API_PORT`
+
+# Running the bot
+To deploy the bot to production, run `npm run build` to generate the minified files. Then, you may start the bot via `build/src/index.js`
+
+To run the bot in a development environment, run `npm run dev`.
