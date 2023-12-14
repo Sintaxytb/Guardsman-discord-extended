@@ -1,3 +1,1 @@
-<a title="" data-testid="ci-badge-passed" data-qa-selector="pipeline_commit_status" href="/bunker-bravo-interactive/guardsman-discord-extended/-/pipelines/13" target="_self" class="badge gl-mb-3 badge-success badge-pill gl-badge md"><!----> <span class="ci-status-icon ci-status-icon-success gl-rounded-full gl-justify-content-center gl-line-height-0" style="height: 16px; width: 16px;"><svg data-testid="status_success-icon" role="img" aria-label="status_success" class="gl-icon s16"><use href="/assets/icons-b25b55b72e1a86a9ca8055a5c421aae9b89fc86363fa02e2109034d756e56d28.svg#status_success"></use></svg></span> <span data-testid="ci-badge-text" class="gl-ml-2 gl-white-space-nowrap gl-text-green-700">
-      passed
-    </span></a>
+<svg><use href="https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-discord-extended/badges/master/pipeline.svg"></use></svg>
