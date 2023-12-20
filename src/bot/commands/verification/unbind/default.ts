@@ -7,18 +7,14 @@ import {
 
 export default class UnbindUserSubcommand implements ICommand
 {
-    name: Lowercase<string> = "user";
-    description: string = "Allows guild administrators to unbind a specific user from the guild.";
+    name: Lowercase<string> = "default";
+    description: string = "Allows guild administrators to unbind a post-verification default role.";
     guardsman: Guardsman;
     options: ApplicationCommandOptionBase[] = [
         new SlashCommandRoleOption()
             .setName("role")
-            .setDescription("The role to bind to.")
-            .setRequired(true),
-        new SlashCommandStringOption()
-            .setName("user")
-            .setDescription("The ID of the user to bind to.")
-            .setRequired(true),
+            .setDescription("The role to unbind from.")
+            .setRequired(true)
     ];
 
     constructor(guardsman: Guardsman)
@@ -32,12 +28,10 @@ export default class UnbindUserSubcommand implements ICommand
         const guild = interaction.guild;
 
         const guildRole = options.getRole("role", true);
-        const userId = options.getString("user", true);
 
         // validate role settings
-        const groupRoleBind: RoleData<RoleDataUserBind> = {
-            type: "user",
-            userId: userId
+        const groupRoleBind: RoleData<any> = {
+            type: "default"
         }
 
         const existingRole = await this.guardsman.database<IRoleBind>("verification_binds")
@@ -54,7 +48,7 @@ export default class UnbindUserSubcommand implements ICommand
                 embeds: [
                    new EmbedBuilder()
                        .setTitle("Guardsman Database")
-                       .setDescription(`A user role bind for <@&${guildRole.id}> with those properties does not exist.`)
+                       .setDescription(`A default role bind for <@&${guildRole.id}> with those properties does not exist.`)
                        .setColor(Colors.Red)
                        .setTimestamp()
                        .setFooter({ text: "Guardsman Database" })
@@ -77,7 +71,7 @@ export default class UnbindUserSubcommand implements ICommand
             embeds: [
                 new EmbedBuilder()
                     .setTitle(`Guardsman Database`)
-                    .setDescription(`Successfully removed a user bind for <@&${guildRole.id}> from user <@${userId}> (${userId}).`)
+                    .setDescription(`Successfully removed a default bind for <@&${guildRole.id}>.`)
                     .setColor(Colors.Green)
                     .setTimestamp()
                     .setFooter({ text: "Guardsman Database" })

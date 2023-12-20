@@ -5,20 +5,16 @@ import {
     SlashCommandRoleOption, SlashCommandStringOption
 } from "discord.js";
 
-export default class UnbindUserSubcommand implements ICommand
+export default class BindUserSubcommand implements ICommand
 {
-    name: Lowercase<string> = "user";
-    description: string = "Allows guild administrators to unbind a specific user from the guild.";
+    name: Lowercase<string> = "default";
+    description: string = "Allows guild administrators to bind a post-verification default role.";
     guardsman: Guardsman;
     options: ApplicationCommandOptionBase[] = [
         new SlashCommandRoleOption()
             .setName("role")
             .setDescription("The role to bind to.")
-            .setRequired(true),
-        new SlashCommandStringOption()
-            .setName("user")
-            .setDescription("The ID of the user to bind to.")
-            .setRequired(true),
+            .setRequired(true)
     ];
 
     constructor(guardsman: Guardsman)
@@ -32,12 +28,10 @@ export default class UnbindUserSubcommand implements ICommand
         const guild = interaction.guild;
 
         const guildRole = options.getRole("role", true);
-        const userId = options.getString("user", true);
 
         // validate role settings
-        const groupRoleBind: RoleData<RoleDataUserBind> = {
-            type: "user",
-            userId: userId
+        const groupRoleBind: RoleData<any> = {
+            type: "default"
         }
 
         const existingRole = await this.guardsman.database<IRoleBind>("verification_binds")
@@ -48,13 +42,13 @@ export default class UnbindUserSubcommand implements ICommand
             })
             .first();
 
-        if (!existingRole)
+        if (existingRole)
         {
             await interaction.reply({
                 embeds: [
                    new EmbedBuilder()
                        .setTitle("Guardsman Database")
-                       .setDescription(`A user role bind for <@&${guildRole.id}> with those properties does not exist.`)
+                       .setDescription(`A default role bind for <@&${guildRole.id}> with those properties already exists.`)
                        .setColor(Colors.Red)
                        .setTimestamp()
                        .setFooter({ text: "Guardsman Database" })
@@ -65,19 +59,17 @@ export default class UnbindUserSubcommand implements ICommand
         }
 
         await this.guardsman.database<IRoleBind>("verification_binds")
-            .delete()
-            .where({
-                id: existingRole.id,
-                guild_id: existingRole.guild_id,
-                role_id: existingRole.role_id,
-                role_data: existingRole.role_data,
+            .insert({
+                guild_id: guild.id,
+                role_id: guildRole.id,
+                role_data: JSON.stringify(groupRoleBind)
             });
 
         await interaction.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle(`Guardsman Database`)
-                    .setDescription(`Successfully removed a user bind for <@&${guildRole.id}> from user <@${userId}> (${userId}).`)
+                    .setDescription(`Successfully added a default bind for <@&${guildRole.id}>.`)
                     .setColor(Colors.Green)
                     .setTimestamp()
                     .setFooter({ text: "Guardsman Database" })
