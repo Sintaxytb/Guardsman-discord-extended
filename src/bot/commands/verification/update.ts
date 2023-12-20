@@ -122,6 +122,8 @@ export default class UpdateCommand implements ICommand
                         break;
                     case "default":
                         allowedRoles.push(verificationBind);
+
+                        break;
                     default:
                         errors.push(`Unknown bind type ${type}. Please contact a guild administrator.`);
                 }
