@@ -49,8 +49,6 @@ export default async (guardsman: Guardsman, interaction: Interaction<"cached">) 
             })
         }
 
-        console.log(command);
-
         if (command.developer && interaction.member.id != "250805980491808768")
         {
             return interaction.reply({

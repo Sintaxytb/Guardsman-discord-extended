@@ -133,7 +133,6 @@ export default class UpdateCommand implements ICommand
         }
 
         // scan user's current roles and verify they are allowed to have them
-        console.log(member.roles.cache)
         for (const role of member.roles.cache.keys())
         {
             const isBoundRole = (verificationBinds.find(r => r.role_id == role && r.guild_id == guild.id)) != null

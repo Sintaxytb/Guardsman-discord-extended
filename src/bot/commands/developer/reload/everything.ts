@@ -37,7 +37,6 @@ export default class ReloadEverythingSubcommand implements ICommand
         }
         catch (error)
         {
-            console.log(error);
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()

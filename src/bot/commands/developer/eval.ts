@@ -4,7 +4,6 @@ import {ChatInputCommandInteraction, SlashCommandNumberOption, SlashCommandStrin
 const cleanString = async (guardsman: Guardsman, string: string | Promise<string>) =>
 {
     string = await string;
-    console.log(string);
 
     const environment = guardsman.environment;
 
@@ -51,10 +50,7 @@ export default class EvalCommand implements ICommand
         try
         {
             const evalReturn = eval(code);
-            console.log(evalReturn);
-
             const cleanReturn = await cleanString(this.guardsman, evalReturn);
-            console.log(cleanReturn);
 
             await interaction.reply({
                 content: "Executed successfully.",
