@@ -1,5 +1,4 @@
-import { QueryType, Track } from "discord-player";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, SlashCommandStringOption } from "discord.js";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder } from "discord.js";
 import { Guardsman } from "index";
 
 export default class PauseCommand implements ICommand 

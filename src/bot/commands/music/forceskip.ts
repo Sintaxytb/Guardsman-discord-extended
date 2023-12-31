@@ -1,8 +1,5 @@
-import { QueryType } from "discord-player";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandStringOption } from "discord.js";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits } from "discord.js";
 import { Guardsman } from "index";
-
-const skipVotes : { [guildId: string]: { channelId: string, votes: number, needed: number } } = {};
 
 export default class ForceSkipCommand implements ICommand 
 {
