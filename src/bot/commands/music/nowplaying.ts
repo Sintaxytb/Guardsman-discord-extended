@@ -41,7 +41,7 @@ export default class PauseCommand implements ICommand
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Guardsman Music")
-                    .setDescription(`Current Song: ${currentTrack.title} - ${currentTrack.author}\n**Length: ${currentTrack.duration}**`)
+                    .setDescription(`Current Song: ${currentTrack.title} - ${currentTrack.author} \n • Requested By: ${currentTrack.requestedBy?.username || "Unknown"} \n • Author: ${currentTrack.author} \n • URL: ${currentTrack.url} \n • Length: ${currentTrack.duration}`)
                     .setColor(Colors.Blurple)
                     .setThumbnail(currentTrack.thumbnail)
                     .setFooter({ text: "Guardsman Discord" })

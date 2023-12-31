@@ -72,7 +72,7 @@ export default class QueueCommand implements ICommand
 
             songs.push({
                 name: song.title,
-                value: `• Author: ${song.author} \n • URL: ${song.url} \n • Views: ${song.views} \n • Length: ${song.duration} \n • Current Song: ${queue.currentTrack.id == song.id && 'Yes' || 'No'}`
+                value: `• Requested By: ${song.requestedBy?.username || "Unknown"} \n • Author: ${song.author} \n • URL: ${song.url} \n • Length: ${song.duration} \n • Current Song: ${queue.currentTrack.id == song.id && 'Yes' || 'No'}`
             })
         }
 
