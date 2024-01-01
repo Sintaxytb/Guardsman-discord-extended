@@ -1,4 +1,4 @@
-import { APIEmbedField, ApplicationCommandOptionBase, AutocompleteInteraction, ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandNumberOption } from "discord.js";
+import { APIEmbedField, ApplicationCommandOptionBase, AutocompleteInteraction, ChatInputCommandInteraction, Colors, EmbedBuilder, SlashCommandNumberOption } from "discord.js";
 import { Guardsman } from "index";
 
 const pageSize = 5;

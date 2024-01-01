@@ -1,5 +1,5 @@
-import axios, { AxiosResponse } from "axios";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandIntegerOption, SlashCommandStringOption } from "discord.js";
+import { AxiosResponse } from "axios";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder, SlashCommandIntegerOption, SlashCommandStringOption } from "discord.js";
 import { Guardsman } from "index";
 
 export default class GlobalBanCommand implements ICommand 

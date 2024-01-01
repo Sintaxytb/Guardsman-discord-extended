@@ -1,5 +1,5 @@
 import { Guardsman } from "index";
-import {ChatInputCommandInteraction} from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import * as process from "process";
 import { writeFile } from "fs/promises";
 

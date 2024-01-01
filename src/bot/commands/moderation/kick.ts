@@ -1,5 +1,4 @@
-import axios, { AxiosResponse } from "axios";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandStringOption } from "discord.js";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandMentionableOption, SlashCommandStringOption } from "discord.js";
 import { Guardsman } from "index";
 
 export default class KickCommand implements ICommand 

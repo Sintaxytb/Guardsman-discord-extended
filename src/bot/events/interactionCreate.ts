@@ -1,4 +1,4 @@
-import {Colors, EmbedBuilder, Interaction, GuildScheduledEventEntityType, PermissionFlagsBits} from "discord.js";
+import { Colors, EmbedBuilder, Interaction } from "discord.js";
 import { Guardsman } from "index";
 
 function firstToUpper(string: string) {

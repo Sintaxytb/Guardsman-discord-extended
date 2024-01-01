@@ -1,6 +1,5 @@
 import { Guardsman } from "index";
-import {ChatInputCommandInteraction, Colors, EmbedBuilder} from "discord.js";
-import { config as parseEnv } from "dotenv";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder } from "discord.js";
 
 export default class ReloadCommandsSubcommand implements ICommand
 {

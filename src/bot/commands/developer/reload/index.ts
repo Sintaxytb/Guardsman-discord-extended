@@ -1,5 +1,5 @@
 import { Guardsman } from "index";
-import {ChatInputCommandInteraction} from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 
 export default class ReloadCommand implements ICommand
 {

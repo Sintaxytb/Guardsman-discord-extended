@@ -1,9 +1,8 @@
-import { ChatInputCommandInteraction, Client, Collection, IntentsBitField, REST, RESTPostAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder, SlashCommandSubcommandBuilder, User } from "discord.js";
+import { ChatInputCommandInteraction, Client, Collection, IntentsBitField, REST, RESTPostAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder, SlashCommandSubcommandBuilder } from "discord.js";
 import { Guardsman } from "../index.js";
 import { readdir, lstat } from "fs/promises";
 import * as url from 'url';
 import * as process from "process";
-import axios, { AxiosInstance } from "axios";
 import { Player, Track } from "discord-player";
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));

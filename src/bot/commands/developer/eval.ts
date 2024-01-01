@@ -1,5 +1,5 @@
 import { Guardsman } from "index";
-import {ChatInputCommandInteraction, SlashCommandNumberOption, SlashCommandStringOption} from "discord.js";
+import {ChatInputCommandInteraction, SlashCommandStringOption} from "discord.js";
 
 const cleanString = async (guardsman: Guardsman, string: string | Promise<string>) =>
 {

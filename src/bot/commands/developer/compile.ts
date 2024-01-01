@@ -1,5 +1,5 @@
 import { Guardsman } from "index";
-import {ChatInputCommandInteraction} from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import { exec } from "child_process";
 
 export default class PullCommand implements ICommand
