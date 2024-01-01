@@ -24,20 +24,22 @@ export default class API
     {
         this.guardsman = guardsman;
         this.server = express();
-        this.middleware.read()
-            .then(() => { guardsman.log.info("Middleware read successfully.") })
-            .then(this.routes.read)
-            .then(() => { guardsman.log.info("Routes read successfully.") })
-            .then(() =>
-            {
-                this.server.get("/", (_, res) => {
-                    res.json({ success: true, status: "Guardsman REST API online and ready." })
-                })
-            })
-            .then(() =>
-            {
-                this.server.listen(guardsman.environment.API_PORT);
-            })
+
+        this.boot();
+    }
+
+    boot = async () => {
+        await this.middleware.read()
+        this.guardsman.log.info("Middleware read successfully.")
+
+        await this.routes.read()
+        this.guardsman.log.info("Routes read successfully.")
+
+        this.server.get("/", (_, res) => {
+            res.json({ success: true, status: "Guardsman REST API online and ready." })
+        });
+
+        this.server.listen(this.guardsman.environment.API_PORT)
     }
     
     routes: APIObject<IRoutesList> = {
@@ -116,6 +118,18 @@ export default class API
 
         read: async() =>
         {
+            let dirExists = true;
+
+            try 
+            {
+                 await lstat(`${__dirname}/middleware`);
+            }
+            catch(error)
+            {
+                dirExists = false;
+            }
+
+            if (!dirExists) return this.guardsman.log.warn("Guardsman API middleware folder does not exist. Skipping middleware parse step...");
             await this.middleware.parseDirectory(`${__dirname}/middleware`);
         }
 
