@@ -14,6 +14,6 @@ export default class InstanceCommand implements ICommand
 
     async execute(interaction: ChatInputCommandInteraction<"cached">): Promise<void>
     {
-        await interaction.reply(this.guardsman.bot.clientGUID);
+        await interaction.reply(this.guardsman.clientGUID);
     }
 }

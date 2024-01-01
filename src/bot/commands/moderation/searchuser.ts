@@ -25,7 +25,7 @@ export default class SearchUserCommand implements ICommand
     {
         await interaction.deferReply();
 
-        const canGlobalBan = await this.guardsman.bot.checkGuardsmanPermissionNode(interaction.user, "moderate:search");
+        const canGlobalBan = await this.guardsman.userbase.checkPermissionNode(interaction.user, "moderate:search");
 
         if (!canGlobalBan) {
             await interaction.editReply({
@@ -47,7 +47,7 @@ export default class SearchUserCommand implements ICommand
         // const userData: AxiosResponse<IUser> = await this.guardsman.bot.guardsmanAPI.get(`api/discord/user/${query}`);
 
         try {
-            userData = await this.guardsman.bot.guardsmanAPI.get(`discord/user/by-username/${query}`);
+            userData = await this.guardsman.backend.get(`discord/user/by-username/${query}`);
         } catch (error) {
             await interaction.editReply({
                 embeds: [
@@ -115,7 +115,7 @@ export default class SearchUserCommand implements ICommand
         const query = interaction.options.getString("query", true);
         if (query == "") return;
         
-        this.guardsman.bot.guardsmanAPI.get(`discord/search/${query}`)
+        this.guardsman.backend.get(`discord/search/${query}`)
             .then(response => {
                 interaction.respond(response.data);
             })

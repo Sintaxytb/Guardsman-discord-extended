@@ -7,6 +7,8 @@ import Noblox from "noblox.js";
 import API from "./api/index.js";
 import * as process from "process";
 import url from "url";
+import axios, { AxiosInstance } from "axios";
+import { User } from "discord.js";
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 export enum GuardsmanState
@@ -27,6 +29,9 @@ class GuardsmanObject {
     database: Knex;
     roblox: typeof Noblox;
     ci: boolean = false;
+
+    clientGUID: string = "";
+    backend: AxiosInstance;
 
     api: API;
     bot: Bot;
@@ -94,11 +99,77 @@ class GuardsmanObject {
         //     this.log.debug("Database migration complete.");
         // });
 
+        this.log.info("Creating backend Axios instance...")
+        this.backend = axios.create({
+            baseURL: this.environment.GUARDSMAN_API_URL,
+            headers: {
+                Authorization: this.environment.GUARDSMAN_API_TOKEN
+            }
+        });
+
         this.log.info("Initializing API...");
         this.api = new API(this);
 
         this.log.info("Initializing discord bot...")
         this.bot = new Bot(this);
+    }
+
+    sendStartupPing = async () => {
+        if (!this.bot.user) return;
+
+        const clientData = await this.backend.post(`discord/bot/startup`, {
+            client_id: this.bot.user.id
+        });
+
+        this.clientGUID = clientData.data.client_guid;
+    }
+
+    sendClientPing = async () => {
+        if (!this.bot.user) return;
+        if (this.clientGUID == "") return this.sendStartupPing();
+
+        const clientData = await this.backend.patch(`discord/bot/checkin`, {
+            client_guid: this.clientGUID,
+            client_id: this.bot.user.id
+        });
+    }
+
+    userbase = {
+        checkPermissionNode: async (user: User, node: GuardsmanPermissionNode) : Promise<boolean> => {
+            let userData: IAPIUser
+    
+            try {
+                userData = (await this.backend.get(`discord/user/by-discord/${user.id}`)).data
+            } catch (error) {
+                return false;
+            }
+           
+            return userData.permissions.includes(node);
+        },
+    
+        getPermissionLevel: async (user: User) : Promise<number> => {
+            let userData: IAPIUser
+
+            try {
+                userData = (await this.backend.get(`discord/user/by-discord/${user.id}`)).data
+            } catch (error) {
+                return 0;
+            }
+           
+            return userData.position;
+        },
+
+        getId: async (user: User) : Promise<number> => {
+            let userData: IAPIUser
+
+        try {
+            userData = (await this.backend.get(`discord/user/by-discord/${user.id}`)).data
+        } catch (error) {
+            return 0;
+        }
+       
+        return userData.id;
+        }
     }
 }
 

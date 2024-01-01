@@ -38,8 +38,8 @@ export default class GlobalBanCommand implements ICommand
         const banReason = interaction.options.getString("reason", false);
         const banExpiry = interaction.options.getInteger("expires", false);
 
-        const moderatorId = await this.guardsman.bot.getGuardsmanId(interaction.user);
-        const canGlobalBan = await this.guardsman.bot.checkGuardsmanPermissionNode(interaction.user, "moderate:moderate");
+        const moderatorId = await this.guardsman.userbase.getId(interaction.user);
+        const canGlobalBan = await this.guardsman.userbase.checkPermissionNode(interaction.user, "moderate:moderate");
 
         if (!canGlobalBan) {
             await interaction.editReply({
@@ -59,7 +59,7 @@ export default class GlobalBanCommand implements ICommand
         let userData: AxiosResponse<IAPIUser>;
 
         try {
-            userData = await this.guardsman.bot.guardsmanAPI.get(`discord/user/${guardsmanId}`);
+            userData = await this.guardsman.backend.get(`discord/user/${guardsmanId}`);
         } catch (error) {
             await interaction.editReply({
                 embeds: [
@@ -75,7 +75,7 @@ export default class GlobalBanCommand implements ICommand
             return;
         }
 
-        const executingPosition = await this.guardsman.bot.getGuardsmanPermissionLevel(interaction.member.user);
+        const executingPosition = await this.guardsman.userbase.getPermissionLevel(interaction.member.user);
         if (userData.data.position >= executingPosition) {
             await interaction.editReply({
                 embeds: [
@@ -91,7 +91,7 @@ export default class GlobalBanCommand implements ICommand
             return;
         }
 
-        const banData: AxiosResponse<IAPIPunishmentData> = await this.guardsman.bot.guardsmanAPI.post(`discord/user/${guardsmanId}/punishment`, {
+        const banData: AxiosResponse<IAPIPunishmentData> = await this.guardsman.backend.post(`discord/user/${guardsmanId}/punishment`, {
             type: "Global Ban",
             reason: banReason || "No reason provided.",
             expires: banExpiry,

@@ -19,8 +19,6 @@ export default class Bot extends Client
     guardsman: Guardsman;
     REST: REST = new REST();
     apiCommands: SlashCommandBuilder[] = [];
-    guardsmanAPI: AxiosInstance;
-    clientGUID: string = "";
     musicController = new Player(this, {
         ytdlOptions: {
             quality: "highestaudio",
@@ -56,12 +54,6 @@ export default class Bot extends Client
         });
 
         this.guardsman = guardsman;
-        this.guardsmanAPI = axios.create({
-            baseURL: this.guardsman.environment.GUARDSMAN_API_URL,
-            headers: {
-                Authorization: this.guardsman.environment.GUARDSMAN_API_TOKEN
-            }
-        });
 
         this.musicController.extractors.loadDefault();
 
@@ -224,61 +216,5 @@ export default class Bot extends Client
                 this.on(event.name, event.function);
             }
         }
-    }
-
-    sendGuardsmanStartupPing = async () => {
-        if (!this.user) return;
-
-        const clientData = await this.guardsmanAPI.post(`discord/bot/startup`, {
-            client_id: this.user.id
-        });
-
-        this.clientGUID = clientData.data.client_guid;
-    }
-
-    sendGuardsmanClientPing = async () => {
-        if (!this.user) return;
-        if (this.clientGUID == "") return this.sendGuardsmanStartupPing();
-
-        const clientData = await this.guardsmanAPI.patch(`discord/bot/checkin`, {
-            client_guid: this.clientGUID,
-            client_id: this.user.id
-        });
-    }
-
-    checkGuardsmanPermissionNode = async (user: User, node: GuardsmanPermissionNode) : Promise<boolean> => {
-        let userData: IAPIUser
-
-        try {
-            userData = (await this.guardsmanAPI.get(`discord/user/by-discord/${user.id}`)).data
-        } catch (error) {
-            return false;
-        }
-       
-        return userData.permissions.includes(node);
-    }
-
-    getGuardsmanPermissionLevel = async (user: User) : Promise<number> => {
-        let userData: IAPIUser
-
-        try {
-            userData = (await this.guardsmanAPI.get(`discord/user/by-discord/${user.id}`)).data
-        } catch (error) {
-            return 0;
-        }
-       
-        return userData.position;
-    }
-
-    getGuardsmanId = async (user: User) : Promise<number> => {
-        let userData: IAPIUser
-
-        try {
-            userData = (await this.guardsmanAPI.get(`discord/user/by-discord/${user.id}`)).data
-        } catch (error) {
-            return 0;
-        }
-       
-        return userData.id;
     }
 }

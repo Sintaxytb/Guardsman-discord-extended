@@ -8,8 +8,8 @@ export default async (guardsman: Guardsman) =>
     guardsman.state = GuardsmanState.ONLINE;
 
     // set ping interval
-    guardsman.bot.sendGuardsmanStartupPing();
-    setInterval(guardsman.bot.sendGuardsmanClientPing, 30E3);
+    guardsman.sendStartupPing();
+    setInterval(guardsman.sendClientPing, 30E3);
 
     // check for reboot file
     try {
