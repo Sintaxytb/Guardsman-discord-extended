@@ -9,6 +9,7 @@ import * as process from "process";
 import url from "url";
 import axios, { AxiosInstance } from "axios";
 import { User } from "discord.js";
+import sentry from "@sentry/node";
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 export enum GuardsmanState
@@ -98,6 +99,12 @@ class GuardsmanObject {
         // {
         //     this.log.debug("Database migration complete.");
         // });
+
+        this.log.debug("Hooking in to Sentry...")
+        sentry.init({
+            dsn: this.environment.SENTRY_DSN,
+            
+        })
 
         this.log.info("Creating backend Axios instance...")
         this.backend = axios.create({
