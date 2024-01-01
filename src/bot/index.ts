@@ -8,6 +8,12 @@ import { Player, Track } from "discord-player";
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
+interface IEventsObject {
+    functions: IEvent[]
+    read: () => Promise<IEvent[]>
+    load: () => Promise<void>
+}
+
 export default class Bot extends Client
 {
     guardsman: Guardsman;
@@ -182,8 +188,8 @@ export default class Bot extends Client
         }
     }
 
-    events = {
-        functions: {},
+    events: IEventsObject = {
+        functions: [],
 
         read: async () => 
         {
@@ -205,6 +211,11 @@ export default class Bot extends Client
 
         load: async () =>
         {
+            // unhook old events
+            for (const event of Object.values(this.events.functions)) {
+                this.removeListener(event.name, event.function);
+            }
+
             const events = await this.events.read();
             this.events.functions = events;
 
