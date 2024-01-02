@@ -4,7 +4,8 @@ import { Guardsman } from "index";
 export default async (guardsman: Guardsman, oldState: VoiceState, newState: VoiceState) =>
 {
     // check if user who left had voted to skip the current song;
-    if (!oldState.member || !newState.channel) return;
+    if (!oldState.member || !oldState.channel) return;
+    if (newState.channel) return;
 
     const voteData = guardsman.bot.skipVotes[oldState.guild.id];
     if (!voteData || oldState.channelId != voteData.channelId) return;
@@ -12,11 +13,11 @@ export default async (guardsman: Guardsman, oldState: VoiceState, newState: Voic
     const memberIndex = voteData.voted.indexOf(oldState.member.id)
     if (memberIndex)
     {
-        if (newState.channel.members.size == 2)
+        if (oldState.channel.members.size - 1 == 2)
         {
             delete guardsman.bot.skipVotes[oldState.guild.id];
             
-            await newState.channel.send({
+            await oldState.channel.send({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Guardsman Music")
@@ -27,12 +28,12 @@ export default async (guardsman: Guardsman, oldState: VoiceState, newState: Voic
                 ]
             })
         }
-         else
+        else
         {
-            voteData.needed = Math.floor(newState.channel.members.size * 0.75)
+            voteData.needed = Math.floor(oldState.channel.members.size - 1 * 0.75)
             voteData.voted.splice(memberIndex, 1);
     
-            await newState.channel.send({
+            await oldState.channel.send({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Guardsman Music")
