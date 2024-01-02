@@ -94,12 +94,6 @@ class GuardsmanObject {
         //    this.roblox.setCookie(this.environment.ROBLOX_COOKIE).then(_ => console.log);
         }
 
-        // this.log.debug("Running database migrations...");
-        // this.database.migrate.latest().then(() =>
-        // {
-        //     this.log.debug("Database migration complete.");
-        // });
-
         this.log.debug("Hooking in to Sentry...")
         sentry.init({
             dsn: this.environment.SENTRY_DSN,

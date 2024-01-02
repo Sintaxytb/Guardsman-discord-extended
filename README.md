@@ -28,6 +28,8 @@ To install Guardsman Discord on your system, follow these steps:
 
 - Copy `.env.example` to `.env` (`cp .env.example .env`)
 
+- Database migrations can be found in the [Guardsman Web](https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-web) repository. You **MUST** have a working Guardsman Web installation to run Guardsman Discord Extended.
+
 # Configuration
 The following configuration values **MUST** be set:
 - `DISCORD_BOT_TOKEN`
