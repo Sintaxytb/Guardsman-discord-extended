@@ -1,10 +1,6 @@
 import { Colors, EmbedBuilder, Interaction } from "discord.js";
 import { Guardsman } from "index";
 
-function firstToUpper(string: string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 export default async (guardsman: Guardsman, interaction: Interaction<"cached">) =>
 {
     if (interaction.isChatInputCommand())
@@ -99,8 +95,8 @@ export default async (guardsman: Guardsman, interaction: Interaction<"cached">) 
             }
         }
     }
-
-    else if (interaction.isAutocomplete()) {
+    else if (interaction.isAutocomplete()) 
+    {
         const sentCommand = interaction.commandName;
         const options = interaction.options;
         let command: ICommand | undefined;

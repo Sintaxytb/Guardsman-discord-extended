@@ -27,7 +27,8 @@ export default class SearchUserCommand implements ICommand
 
         const canGlobalBan = await this.guardsman.userbase.checkPermissionNode(interaction.user, "moderate:search");
 
-        if (!canGlobalBan) {
+        if (!canGlobalBan) 
+        {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -46,9 +47,12 @@ export default class SearchUserCommand implements ICommand
         let userData: AxiosResponse<IUser>
         // const userData: AxiosResponse<IUser> = await this.guardsman.bot.guardsmanAPI.get(`api/discord/user/${query}`);
 
-        try {
+        try 
+        {
             userData = await this.guardsman.backend.get(`discord/user/by-username/${query}`);
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()

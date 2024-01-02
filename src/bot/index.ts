@@ -115,7 +115,8 @@ export default class Bot extends Client
             for (const categoryName of commandsList.keys())
             {
                 const category = commandsList.get(categoryName);
-                if (!category) {
+                if (!category) 
+                {
                     this.guardsman.log.error(`Category is null! ${categoryName}`)
                     continue;
                 }
@@ -149,7 +150,8 @@ export default class Bot extends Client
                             subCommand.setName(subCommandData.name);
                             subCommand.setDescription(subCommandData.description);
                             
-                            for (const option of subCommandData.options || []) {
+                            for (const option of subCommandData.options || []) 
+                            {
                                 subCommand.options.push(option);
                             }
 
@@ -203,7 +205,8 @@ export default class Bot extends Client
         load: async () =>
         {
             // unhook old events
-            for (const event of Object.values(this.events.functions)) {
+            for (const event of Object.values(this.events.functions)) 
+            {
                 this.removeListener(event.name, event.function);
             }
 

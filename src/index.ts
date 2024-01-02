@@ -145,9 +145,12 @@ class GuardsmanObject {
         checkPermissionNode: async (user: User, node: GuardsmanPermissionNode) : Promise<boolean> => {
             let userData: IAPIUser
     
-            try {
+            try 
+            {
                 userData = (await this.backend.get(`discord/user/by-discord/${user.id}`)).data
-            } catch (error) {
+            } 
+            catch (error)
+            {
                 return false;
             }
            
@@ -157,9 +160,12 @@ class GuardsmanObject {
         getPermissionLevel: async (user: User) : Promise<number> => {
             let userData: IAPIUser
 
-            try {
+            try 
+            {
                 userData = (await this.backend.get(`discord/user/by-discord/${user.id}`)).data
-            } catch (error) {
+            } 
+            catch (error) 
+            {
                 return 0;
             }
            
@@ -169,9 +175,12 @@ class GuardsmanObject {
         getId: async (user: User) : Promise<number> => {
             let userData: IAPIUser
 
-        try {
+        try 
+        {
             userData = (await this.backend.get(`discord/user/by-discord/${user.id}`)).data
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             return 0;
         }
        

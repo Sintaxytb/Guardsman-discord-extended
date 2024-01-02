@@ -19,7 +19,8 @@ export default class SkipCommand implements ICommand
 
         await interaction.deferReply();
 
-        if (!interaction.member.voice.channel) {
+        if (!interaction.member.voice.channel) 
+        {
             await interaction.editReply({
                 content: "You must connect to a voice channel before running music commands!"
             });
@@ -30,7 +31,8 @@ export default class SkipCommand implements ICommand
         if (!interaction.channel) return;
 
         const queue = this.guardsman.bot.musicController.queues.get(interaction.guild);
-        if (!queue || !queue.currentTrack) {
+        if (!queue || !queue.currentTrack) 
+        {
             await interaction.editReply({
                 content: "The queue is empty!"
             });
@@ -39,7 +41,8 @@ export default class SkipCommand implements ICommand
         }
 
         // It's 1 person with the bot in VC
-        if (interaction.member.voice.channel.members.size == 2) {
+        if (interaction.member.voice.channel.members.size == 2) 
+        {
             delete skipVotes[guildId];
             await queue.removeTrack(queue.currentTrack);
             await queue.node.skip();
@@ -58,7 +61,8 @@ export default class SkipCommand implements ICommand
             return;
         }
 
-        if (!skipVotes[guildId] || skipVotes[guildId].channelId != interaction.channel.id) {
+        if (!skipVotes[guildId] || skipVotes[guildId].channelId != interaction.channel.id) 
+        {
             const neededVotes = Math.floor(interaction.member.voice.channel.members.size * 0.75)
             skipVotes[guildId] = {
                 channelId: interaction.channel.id,
@@ -79,7 +83,8 @@ export default class SkipCommand implements ICommand
             });
         } else {
             const voteData = skipVotes[guildId];
-            if (voteData.voted.includes(interaction.member.id)) {
+            if (voteData.voted.includes(interaction.member.id)) 
+            {
                 await interaction.editReply({
                     embeds: [
                         new EmbedBuilder()

@@ -8,7 +8,8 @@ export default async (guardsman: Guardsman, request: Request, response: Response
   const oauthCode = query.code || "";
   const codeState = query.state || "";
 
-  if (oauthCode == "" || codeState == "") {
+  if (oauthCode == "" || codeState == "") 
+  {
     return response.json({
       success: false,
       status: "OAuth2 Code or State not sent on request. Please try again."
@@ -64,7 +65,8 @@ export default async (guardsman: Guardsman, request: Request, response: Response
               .orWhere("discord_id", pendingVerificationUser.discord_id)
               .first();
 
-          if (existingUser) {
+          if (existingUser) 
+          {
             await guardsman.database<IUser>("users")
                 .update({
                   username: username,

@@ -41,7 +41,8 @@ export default class GlobalBanCommand implements ICommand
         const moderatorId = await this.guardsman.userbase.getId(interaction.user);
         const canGlobalBan = await this.guardsman.userbase.checkPermissionNode(interaction.user, "moderate:moderate");
 
-        if (!canGlobalBan) {
+        if (!canGlobalBan) 
+        {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -58,9 +59,12 @@ export default class GlobalBanCommand implements ICommand
 
         let userData: AxiosResponse<IAPIUser>;
 
-        try {
+        try 
+        {
             userData = await this.guardsman.backend.get(`discord/user/${guardsmanId}`);
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -76,7 +80,8 @@ export default class GlobalBanCommand implements ICommand
         }
 
         const executingPosition = await this.guardsman.userbase.getPermissionLevel(interaction.member.user);
-        if (userData.data.position >= executingPosition) {
+        if (userData.data.position >= executingPosition) 
+        {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -100,7 +105,8 @@ export default class GlobalBanCommand implements ICommand
         });
 
         // send ban dm to user
-        try {
+        try 
+        {
             const user = await this.guardsman.bot.users.cache.find(user => user.id === userData.data.discord_id);
             if (!user) throw new Error("User could not be messaged.");
 
@@ -130,7 +136,9 @@ export default class GlobalBanCommand implements ICommand
                         )
                 ]
             })
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             await interaction.channel?.send({
                 embeds: [
                     new EmbedBuilder()
@@ -145,12 +153,16 @@ export default class GlobalBanCommand implements ICommand
 
         const guilds = this.guardsman.bot.guilds.cache.values();
         const errors = [];
-        for (const guild of guilds) {
-            try {
+        for (const guild of guilds) 
+        {
+            try 
+            {
                 await guild.bans.create(userData.data.discord_id, {
                     reason: (banReason || `No reason provided.`) + `; Executed by: ${interaction.member.user.username}`
                 });
-            } catch (error) {
+            } 
+            catch (error) 
+            {
                 errors.push(error);
             }
         }

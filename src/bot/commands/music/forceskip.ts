@@ -17,7 +17,8 @@ export default class ForceSkipCommand implements ICommand
     {
         await interaction.deferReply();
 
-        if (!interaction.member.voice.channel) {
+        if (!interaction.member.voice.channel) 
+        {
             await interaction.editReply({
                 content: "You must connect to a voice channel before running music commands!"
             });
@@ -26,7 +27,8 @@ export default class ForceSkipCommand implements ICommand
         }
 
         const queue = this.guardsman.bot.musicController.queues.get(interaction.guild);
-        if (!queue || !queue.currentTrack) {
+        if (!queue || !queue.currentTrack) 
+        {
             await interaction.editReply({
                 content: "The queue is empty!"
             });

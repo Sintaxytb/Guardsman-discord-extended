@@ -22,7 +22,8 @@ export default class UpdateCommand implements ICommand
             .where("discord_id", member.id)
             .first();
 
-        if (!existingUserData) {
+        if (!existingUserData) 
+        {
             await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
@@ -64,24 +65,29 @@ export default class UpdateCommand implements ICommand
         });
 
         // parse allowed roles
-        for (const verificationBind of verificationBinds) {
+        for (const verificationBind of verificationBinds) 
+        {
             const bindData: RoleData<any> = JSON.parse(verificationBind.role_data);
 
             const type = bindData.type;
-            try {
-                switch (type) {
+            try 
+            {
+                switch (type) 
+                {
                     case "group":
                         const groupId = bindData.groupId;
                         const minimumRank = bindData.minRank;
                         const maxRank = bindData.maxRank;
 
                         let userRank = roleCache[groupId];
-                        if (!userRank) {
+                        if (!userRank) 
+                        {
                             userRank = await Noblox.getRankInGroup(groupId, parseInt(existingUserData.roblox_id));
                             roleCache[groupId] = userRank;
                         }
 
-                        if (userRank >= minimumRank && userRank <= maxRank) {
+                        if (userRank >= minimumRank && userRank <= maxRank) 
+                        {
                             allowedRoles.push(verificationBind);
                         }
 
@@ -89,7 +95,8 @@ export default class UpdateCommand implements ICommand
                     case "user":
                         const userId = bindData.userId;
 
-                        if (userId == existingUserData.roblox_id || userId == existingUserData.discord_id) {
+                        if (userId == existingUserData.roblox_id || userId == existingUserData.discord_id) 
+                        {
                             allowedRoles.push(verificationBind);
                         }
 
@@ -98,15 +105,19 @@ export default class UpdateCommand implements ICommand
                         const gamepassId = bindData.gamepassId;
                         let userOwnsGamepass = false;
 
-                        try {
+                        try 
+                        {
                             const apiUrl = `https://inventory.roblox.com/v1/users/62097945/items/1/${gamepassId}/is-owned`
                             const returnedApiData = await axios.get(apiUrl);
                             userOwnsGamepass = returnedApiData.data == "true";
-                        } catch (error: any) {
+                        } 
+                        catch (error: any) 
+                        {
                             errors.push(error);
                         }
 
-                        if (userOwnsGamepass) {
+                        if (userOwnsGamepass) 
+                        {
                             allowedRoles.push(verificationBind);
                         }
 
@@ -115,7 +126,8 @@ export default class UpdateCommand implements ICommand
                         const canAddRole = member.roles.resolve(verificationBind.role_id)
                             || allowedRoles.find(role => role.role_id == verificationBind.role_id);
 
-                        if (canAddRole != null) {
+                        if (canAddRole != null) 
+                        {
                             allowedRoles.push(verificationBind);
                         }
 
@@ -127,7 +139,9 @@ export default class UpdateCommand implements ICommand
                     default:
                         errors.push(`Unknown bind type ${type}. Please contact a guild administrator.`);
                 }
-            } catch (error) {
+            } 
+            catch (error) 
+            {
                 errors.push(`Failed to apply a role. ${error}`);
             }
         }
@@ -150,8 +164,10 @@ export default class UpdateCommand implements ICommand
         }
 
         // ensure no allowed roles are in the removedRoles list
-        for (const removedRole of removedRoles) {
-            if (allowedRoles.includes(removedRole)) {
+        for (const removedRole of removedRoles) 
+        {
+            if (allowedRoles.includes(removedRole)) 
+            {
                 removedRoles.splice(removedRoles.indexOf(removedRole), 1);
             }
         }

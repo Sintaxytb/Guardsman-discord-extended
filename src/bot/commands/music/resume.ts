@@ -16,7 +16,8 @@ export default class PauseCommand implements ICommand
     {
         await interaction.deferReply();
 
-        if (!interaction.member.voice.channel) {
+        if (!interaction.member.voice.channel) 
+        {
             await interaction.editReply({
                 content: "You must connect to a voice channel before running music commands!"
             });
@@ -27,7 +28,8 @@ export default class PauseCommand implements ICommand
         if (!interaction.channel) return;
 
         const queue = this.guardsman.bot.musicController.queues.get(interaction.guild);
-        if (!queue || !queue.currentTrack) {
+        if (!queue || !queue.currentTrack) 
+        {
             await interaction.editReply({
                 content: "The queue is empty!"
             });
@@ -35,7 +37,8 @@ export default class PauseCommand implements ICommand
             return;
         }
 
-        if (!queue.node.isPaused()) {
+        if (!queue.node.isPaused()) 
+        {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()

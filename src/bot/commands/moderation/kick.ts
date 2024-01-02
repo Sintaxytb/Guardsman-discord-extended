@@ -32,7 +32,8 @@ export default class KickCommand implements ICommand
         const kickReason = interaction.options.getString("reason", false);
         const member = interaction.options.getMember("user");
 
-        if (!member) {
+        if (!member) 
+        {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -48,7 +49,8 @@ export default class KickCommand implements ICommand
         }
 
         // send kick dm to user
-        try {
+        try 
+        {
             const user = await this.guardsman.bot.users.cache.find(user => user.id === member.id);
             if (!user) throw new Error("User could not be messaged.");
 
@@ -68,7 +70,9 @@ export default class KickCommand implements ICommand
                         )
                 ]
             })
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             await interaction.channel?.send({
                 embeds: [
                     new EmbedBuilder()
@@ -81,11 +85,14 @@ export default class KickCommand implements ICommand
             });
         }
 
-        try {
+        try 
+        {
             await interaction.guild.bans.create(member.id, {
                 reason: (kickReason || `No reason provided.`) + `; Executed by: ${interaction.member.user.username}`
             });
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()

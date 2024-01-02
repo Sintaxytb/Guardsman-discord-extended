@@ -12,7 +12,8 @@ export default async (guardsman: Guardsman) =>
     setInterval(guardsman.sendClientPing, 30E3);
 
     // check for reboot file
-    try {
+    try 
+    {
         readFile(".rm-rebootfile", async (err, data) =>
         {
             if (!data) return;
@@ -32,7 +33,9 @@ export default async (guardsman: Guardsman) =>
 
             unlink(".rm-rebootfile", () => {});
         })
-    } catch (error) {}
+    } 
+    catch (error) 
+    {}
 
     guardsman.bot.user?.setPresence({
         status: "online",

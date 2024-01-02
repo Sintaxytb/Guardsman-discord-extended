@@ -29,7 +29,8 @@ export default class PlayCommand implements ICommand
     {
         await interaction.deferReply();
 
-        if (!interaction.member.voice.channel) {
+        if (!interaction.member.voice.channel) 
+        {
             await interaction.editReply({
                 content: "You must connect to a voice channel before running music commands!"
             });
@@ -41,7 +42,8 @@ export default class PlayCommand implements ICommand
         const urlQuery = await interaction.options.getString("url");
         const attachment = await interaction.options.getAttachment("attachment");
 
-        if (!urlQuery && !attachment) {
+        if (!urlQuery && !attachment) 
+        {
             await interaction.editReply({
                 content: "You must provide a URL or attachment to play!"
             });
@@ -52,7 +54,8 @@ export default class PlayCommand implements ICommand
         const queue = await this.guardsman.bot.musicController.queues.create(interaction.guild);
         if (!queue.connection) await queue.connect(interaction.member.voice.channel);
 
-        if (attachment) {
+        if (attachment) 
+        {
             console.log(attachment.url);
 
             const { track } = await queue.play(attachment.url, {
@@ -72,13 +75,15 @@ export default class PlayCommand implements ICommand
             });
         }
 
-        if (urlQuery) {
+        if (urlQuery) 
+        {
             const results = await this.guardsman.bot.musicController.search(urlQuery, {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.AUTO,
             });
     
-            if (results.tracks.length === 0 && !results.playlist) {
+            if (results.tracks.length === 0 && !results.playlist) 
+            {
                 await interaction.editReply("No tracks could be found. Check the query and try again.");
                 return;
             }
@@ -86,8 +91,10 @@ export default class PlayCommand implements ICommand
             const track = results.tracks[0];
             const playlist = results.playlist;
             
-            if (playlist) {
-                for (const pTrack of playlist.tracks) {
+            if (playlist) 
+            {
+                for (const pTrack of playlist.tracks) 
+                {
                     await queue.addTrack(pTrack);
                 }
     

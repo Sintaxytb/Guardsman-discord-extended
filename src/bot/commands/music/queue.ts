@@ -27,7 +27,8 @@ export default class QueueCommand implements ICommand
         await interaction.deferReply();
 
         const queue = this.guardsman.bot.musicController.queues.get(interaction.guild);
-        if (!queue || !queue.currentTrack) {
+        if (!queue || !queue.currentTrack) 
+        {
             await interaction.editReply({
                 content: "The queue is empty!"
             });
@@ -39,7 +40,8 @@ export default class QueueCommand implements ICommand
         const queueSize = queue.size;
         const pages = Math.ceil(queueSize / pageSize);
 
-        if (queuePage > pages) {
+        if (queuePage > pages) 
+        {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -66,7 +68,8 @@ export default class QueueCommand implements ICommand
 
         const startingIndex = (pageSize * queuePage) - pageSize;
         const songs: APIEmbedField[] = []
-        for (let i = startingIndex; i < startingIndex + pageSize; i++) {
+        for (let i = startingIndex; i < startingIndex + pageSize; i++) 
+        {
             const song = queue.tracks.at(i);
             if (song == undefined) break;
 
@@ -91,7 +94,8 @@ export default class QueueCommand implements ICommand
 
     async autocomplete(interaction: AutocompleteInteraction<"cached">): Promise<void> {
         const queue = this.guardsman.bot.musicController.queues.get(interaction.guild);
-        if (!queue || !queue.currentTrack) {
+        if (!queue || !queue.currentTrack) 
+        {
             interaction.respond([
                 {
                     name: "The queue is empty!",
@@ -105,7 +109,8 @@ export default class QueueCommand implements ICommand
         const pages = Math.ceil(queueSize / pageSize);
         const response = []
 
-        for (let i = 1; i < pages + 1; i++) {
+        for (let i = 1; i < pages + 1; i++) 
+        {
             response.push({
                 name: `Page ${i}`,
                 value: i

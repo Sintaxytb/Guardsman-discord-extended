@@ -29,11 +29,13 @@ export default class BindsCommand implements ICommand
 
         const binds: Array<string> = [];
 
-        for (const bind of bindData) {
+        for (const bind of bindData) 
+        {
             const roleData = JSON.parse(bind.role_data);
             let roleDataString = "";
 
-            for (const index in roleData) {
+            for (const index in roleData) 
+            {
                 const value = roleData[index];
 
                 roleDataString = roleDataString + `${index}: ${value}\n  `;

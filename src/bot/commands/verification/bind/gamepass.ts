@@ -21,7 +21,8 @@ export default class BindGamePassSubcommand implements ICommand {
             .setRequired(true),
     ];
 
-    constructor(guardsman: Guardsman) {
+    constructor(guardsman: Guardsman) 
+    {
         this.guardsman = guardsman;
     }
 
@@ -46,7 +47,8 @@ export default class BindGamePassSubcommand implements ICommand {
             })
             .first();
 
-        if (existingRole) {
+        if (existingRole) 
+        {
             await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
