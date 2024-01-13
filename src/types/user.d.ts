@@ -21,7 +21,7 @@ declare interface IAPIUser
     game_data: string
     rollback_points: string
     roles: string
-    permissions: string
+    permissions: { [node: string]: boolean }
     role: IRole
     position: number
     created_at?: Date

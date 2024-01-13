@@ -148,7 +148,7 @@ class GuardsmanObject {
                 return false;
             }
            
-            return userData.permissions.includes(node);
+            return userData.permissions[node];
         },
     
         getPermissionLevel: async (user: User) : Promise<number> => {
