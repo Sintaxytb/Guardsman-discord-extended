@@ -10,7 +10,7 @@ import url from "url";
 import axios, { AxiosInstance } from "axios";
 import { User } from "discord.js";
 import sentry from "@sentry/node";
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+const dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 export enum GuardsmanState
 {
@@ -71,11 +71,11 @@ class GuardsmanObject {
         this.database = knex({
             client: this.environment.DB_CONNECTION,
             migrations: {
-                directory: `${__dirname}/../migrations`
+                directory: `${dirname}/../migrations`
             },
             connection: {
                 host: this.environment.DB_HOST,
-                port: parseInt(this.environment.DB_PORT),
+                port: parseInt(this.environment.DB_PORT, 10),
                 database: this.environment.DB_DATABASE,
                 user: this.environment.DB_USERNAME,
                 password: this.environment.DB_PASSWORD,
@@ -97,7 +97,7 @@ class GuardsmanObject {
         this.log.debug("Hooking in to Sentry...")
         sentry.init({
             dsn: this.environment.SENTRY_DSN,
-            
+
         })
 
         this.log.info("Creating backend Axios instance...")
@@ -127,7 +127,7 @@ class GuardsmanObject {
 
     sendClientPing = async () => {
         if (!this.bot.user) return;
-        if (this.clientGUID == "") return this.sendStartupPing();
+        if (this.clientGUID === "") return this.sendStartupPing();
 
         const clientData = await this.backend.patch(`discord/bot/checkin`, {
             client_guid: this.clientGUID,
@@ -138,46 +138,46 @@ class GuardsmanObject {
     userbase = {
         checkPermissionNode: async (user: User, node: GuardsmanPermissionNode) : Promise<boolean> => {
             let userData: IAPIUser
-    
-            try 
+
+            try
             {
                 userData = (await this.backend.get(`discord/user/by-discord/${user.id}`)).data
-            } 
+            }
             catch (error)
             {
                 return false;
             }
-           
+
             return userData.permissions[node];
         },
-    
+
         getPermissionLevel: async (user: User) : Promise<number> => {
             let userData: IAPIUser
 
-            try 
+            try
             {
                 userData = (await this.backend.get(`discord/user/by-discord/${user.id}`)).data
-            } 
-            catch (error) 
+            }
+            catch (error)
             {
                 return 0;
             }
-           
+
             return userData.position;
         },
 
         getId: async (user: User) : Promise<number> => {
             let userData: IAPIUser
 
-        try 
+        try
         {
             userData = (await this.backend.get(`discord/user/by-discord/${user.id}`)).data
-        } 
-        catch (error) 
+        }
+        catch (error)
         {
             return 0;
         }
-       
+
         return userData.id;
         }
     }
