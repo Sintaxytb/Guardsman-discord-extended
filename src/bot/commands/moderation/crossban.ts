@@ -119,7 +119,7 @@ export default class CrossBanCommand implements ICommand
         {
             try 
             {
-                await guild.bans.create(userData.data.discord_id, {
+                await guild.bans.create(discordId, {
                     reason: (banReason || `No reason provided.`) + `; Executed by: ${interaction.member.user.username}`
                 });
             } 
@@ -133,7 +133,7 @@ export default class CrossBanCommand implements ICommand
             embeds: [
                 new EmbedBuilder()
                         .setTitle("Guardsman Moderation")
-                        .setDescription(`${userData.data.username} has been globally banned from all Guardsman-controlled guilds and experiences.`)
+                        .setDescription(`<@${discordId}>(${discordId}) has been globally banned from all Guardsman-controlled guilds and experiences.`)
                         .setColor(Colors.Red)
                         .setFooter({ text: "Guardsman Moderation"})
                         .setTimestamp()
