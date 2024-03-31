@@ -96,10 +96,40 @@ export default class GlobalBanCommand implements ICommand
             return;
         }
 
+        if (banExpiry && banExpiry < Date.now()) {
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman Moderation")
+                        .setDescription("You cannot ban a user in the past.")
+                        .setColor(Colors.Red)
+                        .setFooter({ text: "Guardsman Moderation" })
+                        .setTimestamp()
+                ]
+            });
+
+            return;
+        }
+
+        if (banExpiry && !isNaN(Date.parse(new Date(banExpiry).toString()))) {
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Guardsman Moderation")
+                        .setDescription("Invalid expiry date.")
+                        .setColor(Colors.Red)
+                        .setFooter({ text: "Guardsman Moderation" })
+                        .setTimestamp()
+                ]
+            });
+
+            return;
+        }
+
         const banData: AxiosResponse<IAPIPunishmentData> = await this.guardsman.backend.post(`discord/user/${guardsmanId}/punishment`, {
-            type: "Global Ban",
+            type: 1,
             reason: banReason || "No reason provided.",
-            expires: banExpiry,
+            expires: banExpiry || 0,
             evidence: [],
             moderator: moderatorId
         });
