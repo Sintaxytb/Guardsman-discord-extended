@@ -97,7 +97,7 @@ export default class GlobalBanCommand implements ICommand
         }
 
         if (banExpiry) {
-            if (banExpiry < Date.now()) {
+            if (banExpiry < Math.floor(Date.now() / 1000)) {
                 await interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
