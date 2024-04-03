@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandMentionableOption, SlashCommandStringOption } from "discord.js";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandUserOption, SlashCommandStringOption } from "discord.js";
 import { Guardsman } from "index";
 
 export default class BanCommand implements ICommand 
@@ -9,7 +9,7 @@ export default class BanCommand implements ICommand
     defaultMemberPermissions?: string | number | bigint | null | undefined = PermissionFlagsBits.BanMembers;
 
     options = [
-        new SlashCommandMentionableOption()
+        new SlashCommandUserOption()
             .setName("user")
             .setDescription("The user to ban (To find, run /searchuser)")
             .setRequired(true),
