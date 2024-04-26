@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder, Colors } from "discord.js";
 import { Guardsman } from "index";
-import project from "../../../../package.json" assert { type: "json" };
+import project from "package";
 import os from "node:os";
 import child_process from "node:child_process";
 import moment from 'moment';
