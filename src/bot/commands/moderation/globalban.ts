@@ -1,9 +1,9 @@
 import { AxiosResponse } from "axios";
 import { ChatInputCommandInteraction, Colors, EmbedBuilder, SlashCommandIntegerOption, SlashCommandStringOption } from "discord.js";
 import { Guardsman } from "index";
+import { getSetting } from "../../util/guildSettings.js";
 
-export default class GlobalBanCommand implements ICommand 
-{
+export default class GlobalBanCommand implements ICommand {
     name: Lowercase<string> = "globalban";
     description: string = "Allows Guardsman moderators to global ban a user from ALL Guardsman-controlled servers.";
     guardsman: Guardsman;
@@ -25,13 +25,11 @@ export default class GlobalBanCommand implements ICommand
             .setRequired(false)
     ]
 
-    constructor(guardsman: Guardsman) 
-    {
+    constructor(guardsman: Guardsman) {
         this.guardsman = guardsman;
     }
 
-    async execute(interaction: ChatInputCommandInteraction<"cached">): Promise<void>
-    {
+    async execute(interaction: ChatInputCommandInteraction<"cached">): Promise<void> {
         await interaction.deferReply();
 
         const guardsmanId = interaction.options.getString("id", true);
@@ -41,8 +39,7 @@ export default class GlobalBanCommand implements ICommand
         const moderatorId = await this.guardsman.userbase.getId(interaction.user);
         const canGlobalBan = await this.guardsman.userbase.checkPermissionNode(interaction.user, "moderate:moderate");
 
-        if (!canGlobalBan) 
-        {
+        if (!canGlobalBan) {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -59,12 +56,10 @@ export default class GlobalBanCommand implements ICommand
 
         let userData: AxiosResponse<IAPIUser>;
 
-        try 
-        {
+        try {
             userData = await this.guardsman.backend.get(`discord/user/${guardsmanId}`);
-        } 
-        catch (error) 
-        {
+        }
+        catch (error) {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -75,13 +70,12 @@ export default class GlobalBanCommand implements ICommand
                         .setTimestamp()
                 ]
             })
-            
+
             return;
         }
 
         const executingPosition = await this.guardsman.userbase.getPermissionLevel(interaction.member.user);
-        if (userData.data.position >= executingPosition) 
-        {
+        if (userData.data.position >= executingPosition) {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -92,7 +86,7 @@ export default class GlobalBanCommand implements ICommand
                         .setTimestamp()
                 ]
             })
-            
+
             return;
         }
 
@@ -120,8 +114,7 @@ export default class GlobalBanCommand implements ICommand
         });
 
         // send ban dm to user
-        try 
-        {
+        try {
             const user = await this.guardsman.bot.users.cache.find(user => user.id === userData.data.discord_id);
             if (!user) throw new Error("User could not be messaged.");
 
@@ -131,7 +124,7 @@ export default class GlobalBanCommand implements ICommand
                         .setTitle("Guardsman Moderation")
                         .setDescription("You have been **globally banned** from ALL Guardsman-controlled guilds, and ALL Guardsman-controlled experiences.")
                         .setColor(Colors.Red)
-                        .setFooter({ text: "Guardsman Moderation"})
+                        .setFooter({ text: "Guardsman Moderation" })
                         .setTimestamp()
                         .addFields(
                             {
@@ -151,9 +144,8 @@ export default class GlobalBanCommand implements ICommand
                         )
                 ]
             })
-        } 
-        catch (error) 
-        {
+        }
+        catch (error) {
             await interaction.channel?.send({
                 embeds: [
                     new EmbedBuilder()
@@ -168,16 +160,14 @@ export default class GlobalBanCommand implements ICommand
 
         const guilds = this.guardsman.bot.guilds.cache.values();
         const errors = [];
-        for (const guild of guilds) 
-        {
-            try 
-            {
+        for (const guild of guilds) {
+            try {
+                if (await getSetting(this.guardsman, guild, "globalBanExcluded")) continue;
                 await guild.bans.create(userData.data.discord_id, {
                     reason: (banReason || `No reason provided.`) + `; Executed by: ${interaction.member.user.username}`
                 });
-            } 
-            catch (error) 
-            {
+            }
+            catch (error) {
                 errors.push(error);
             }
         }
@@ -185,32 +175,32 @@ export default class GlobalBanCommand implements ICommand
         await interaction.editReply({
             embeds: [
                 new EmbedBuilder()
-                        .setTitle("Guardsman Moderation")
-                        .setDescription(`${userData.data.username} has been globally banned from all Guardsman-controlled guilds and experiences.`)
-                        .setColor(Colors.Red)
-                        .setFooter({ text: "Guardsman Moderation"})
-                        .setTimestamp()
-                        .addFields(
-                            {
-                                name: "REF ID",
-                                value: banData.data.id
-                            },
+                    .setTitle("Guardsman Moderation")
+                    .setDescription(`${userData.data.username} has been globally banned from all Guardsman-controlled guilds and experiences.`)
+                    .setColor(Colors.Red)
+                    .setFooter({ text: "Guardsman Moderation" })
+                    .setTimestamp()
+                    .addFields(
+                        {
+                            name: "REF ID",
+                            value: banData.data.id
+                        },
 
-                            {
-                                name: "Reason",
-                                value: banReason || "No Reason Provided"
-                            },
+                        {
+                            name: "Reason",
+                            value: banReason || "No Reason Provided"
+                        },
 
-                            {
-                                name: "Expires",
-                                value: (banExpiry != null && `<t:${banExpiry}>` || "Never")
-                            },
+                        {
+                            name: "Expires",
+                            value: (banExpiry != null && `<t:${banExpiry}>` || "Never")
+                        },
 
-                            {
-                                name: "Errors",
-                                value: errors.length > 0 && errors.join(",\n") || "None."
-                            }
-                        )
+                        {
+                            name: "Errors",
+                            value: errors.length > 0 && errors.join(",\n") || "None."
+                        }
+                    )
             ]
         })
     }
