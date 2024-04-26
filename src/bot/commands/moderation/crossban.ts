@@ -1,9 +1,8 @@
-import { AxiosResponse } from "axios";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, SlashCommandIntegerOption, SlashCommandStringOption } from "discord.js";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder, SlashCommandStringOption } from "discord.js";
 import { Guardsman } from "index";
+import { getSetting } from "../../util/guildSettings.js";
 
-export default class CrossBanCommand implements ICommand 
-{
+export default class CrossBanCommand implements ICommand {
     name: Lowercase<string> = "cban";
     description: string = "Allows Guardsman moderators to cross ban a user from ALL Guardsman-controlled servers.";
     guardsman: Guardsman;
@@ -20,13 +19,11 @@ export default class CrossBanCommand implements ICommand
             .setRequired(false)
     ]
 
-    constructor(guardsman: Guardsman) 
-    {
+    constructor(guardsman: Guardsman) {
         this.guardsman = guardsman;
     }
 
-    async execute(interaction: ChatInputCommandInteraction<"cached">): Promise<void>
-    {
+    async execute(interaction: ChatInputCommandInteraction<"cached">): Promise<void> {
         await interaction.deferReply();
 
         const discordId = interaction.options.getString("id", true);
@@ -34,8 +31,7 @@ export default class CrossBanCommand implements ICommand
 
         const canGlobalBan = await this.guardsman.userbase.checkPermissionNode(interaction.user, "moderate:moderate");
 
-        if (!canGlobalBan) 
-        {
+        if (!canGlobalBan) {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -52,16 +48,13 @@ export default class CrossBanCommand implements ICommand
 
         let userData: any;
 
-        try 
-        {
+        try {
             userData = await this.guardsman.backend.get(`discord/user/by-discord/${discordId}`);
-        } 
-        catch (error) 
-        {}
+        }
+        catch (error) { }
 
         const executingPosition = await this.guardsman.userbase.getPermissionLevel(interaction.member.user);
-        if (userData != undefined && userData.data.position >= executingPosition) 
-        {
+        if (userData != undefined && userData.data.position >= executingPosition) {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -72,13 +65,12 @@ export default class CrossBanCommand implements ICommand
                         .setTimestamp()
                 ]
             })
-            
+
             return;
         }
 
         // send ban dm to user
-        try 
-        {
+        try {
             const user = await this.guardsman.bot.users.cache.find(user => user.id === discordId);
             if (!user) throw new Error("User could not be messaged.");
 
@@ -88,7 +80,7 @@ export default class CrossBanCommand implements ICommand
                         .setTitle("Guardsman Moderation")
                         .setDescription("You have been **globally banned** from ALL Guardsman-controlled guilds.")
                         .setColor(Colors.Red)
-                        .setFooter({ text: "Guardsman Moderation"})
+                        .setFooter({ text: "Guardsman Moderation" })
                         .setTimestamp()
                         .addFields(
                             {
@@ -98,9 +90,8 @@ export default class CrossBanCommand implements ICommand
                         )
                 ]
             })
-        } 
-        catch (error) 
-        {
+        }
+        catch (error) {
             await interaction.channel?.send({
                 embeds: [
                     new EmbedBuilder()
@@ -115,16 +106,14 @@ export default class CrossBanCommand implements ICommand
 
         const guilds = this.guardsman.bot.guilds.cache.values();
         const errors = [];
-        for (const guild of guilds) 
-        {
-            try 
-            {
+        for (const guild of guilds) {
+            try {
+                if (await getSetting(this.guardsman, guild, "globalBanExcluded")) continue;
                 await guild.bans.create(discordId, {
                     reason: (banReason || `No reason provided.`) + `; Executed by: ${interaction.member.user.username}`
                 });
-            } 
-            catch (error) 
-            {
+            }
+            catch (error) {
                 errors.push(error);
             }
         }
@@ -132,22 +121,22 @@ export default class CrossBanCommand implements ICommand
         await interaction.editReply({
             embeds: [
                 new EmbedBuilder()
-                        .setTitle("Guardsman Moderation")
-                        .setDescription(`<@${discordId}>(${discordId}) has been globally banned from all Guardsman-controlled guilds.`)
-                        .setColor(Colors.Red)
-                        .setFooter({ text: "Guardsman Moderation"})
-                        .setTimestamp()
-                        .addFields(
-                            {
-                                name: "Reason",
-                                value: banReason || "No Reason Provided"
-                            },
+                    .setTitle("Guardsman Moderation")
+                    .setDescription(`<@${discordId}>(${discordId}) has been globally banned from all Guardsman-controlled guilds.`)
+                    .setColor(Colors.Red)
+                    .setFooter({ text: "Guardsman Moderation" })
+                    .setTimestamp()
+                    .addFields(
+                        {
+                            name: "Reason",
+                            value: banReason || "No Reason Provided"
+                        },
 
-                            {
-                                name: "Errors",
-                                value: errors.length > 0 && errors.join(",\n") || "None."
-                            }
-                        )
+                        {
+                            name: "Errors",
+                            value: errors.length > 0 && errors.join(",\n") || "None."
+                        }
+                    )
             ]
         })
     }
