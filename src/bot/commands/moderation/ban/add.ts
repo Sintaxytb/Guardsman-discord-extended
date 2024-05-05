@@ -1,9 +1,10 @@
 import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandUserOption, SlashCommandStringOption } from "discord.js";
+import { getSettings } from "../../../util/guildSettings.js";
+import { addInfoToString } from "../../../util/string.js";
 import { Guardsman } from "index";
 
-export default class BanCommand implements ICommand 
-{
-    name: Lowercase<string> = "ban";
+export default class BanCommand implements ICommand {
+    name: Lowercase<string> = "add";
     description: string = "Allows Guild moderators to ban a user from this guild.";
     guardsman: Guardsman;
     defaultMemberPermissions?: string | number | bigint | null | undefined = PermissionFlagsBits.BanMembers;
@@ -20,20 +21,19 @@ export default class BanCommand implements ICommand
             .setRequired(false),
     ]
 
-    constructor(guardsman: Guardsman) 
-    {
+    constructor(guardsman: Guardsman) {
         this.guardsman = guardsman;
     }
 
-    async execute(interaction: ChatInputCommandInteraction<"cached">): Promise<void>
-    {
+    async execute(interaction: ChatInputCommandInteraction<"cached">): Promise<void> {
         await interaction.deferReply();
 
-        const banReason = interaction.options.getString("reason", false);
-        const member = interaction.options.getMember("user");
+        const banReason = interaction.options.getString("reason") || "No Reason Provided";
+        const user = interaction.options.getUser("user");
 
-        if (!member) 
-        {
+        const guildSettings = await getSettings(this.guardsman, interaction.guild);
+
+        if (!user) {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -49,30 +49,28 @@ export default class BanCommand implements ICommand
         }
 
         // send ban dm to user
-        try 
-        {
-            const user = await this.guardsman.bot.users.cache.find(user => user.id === member.id);
-            if (!user) throw new Error("User could not be messaged.");
+        try {
+            const person = this.guardsman.bot.users.cache.get(user.id);
+            if (!person) throw new Error("User could not be messaged.");
 
-            await user.send({
+            await person.send({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Guardsman Moderation")
-                        .setDescription(`You have been **banned** from ${interaction.guild.name}.`)
+                        .setDescription(addInfoToString(guildSettings.banMessage, { server: interaction.guild.name }))
                         .setColor(Colors.Red)
-                        .setFooter({ text: "Guardsman Moderation"})
+                        .setFooter({ text: "Guardsman Moderation" })
                         .setTimestamp()
                         .addFields(
                             {
                                 name: "Reason",
-                                value: banReason || "No Reason Provided"
+                                value: banReason
                             }
                         )
                 ]
             })
-        } 
-        catch (error) 
-        {
+        }
+        catch (error) {
             await interaction.channel?.send({
                 embeds: [
                     new EmbedBuilder()
@@ -85,19 +83,17 @@ export default class BanCommand implements ICommand
             });
         }
 
-        try 
-        {
-            await interaction.guild.bans.create(member.id, {
-                reason: (banReason || `No reason provided.`) + `; Executed by: ${interaction.member.user.username}`
+        try {
+            await interaction.guild.bans.create(user.id, {
+                reason: banReason + `; Executed by: ${interaction.member.user.username}`
             });
-        } 
-        catch (error) 
-        {
+        }
+        catch (error) {
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Guardsman Moderation")
-                        .setDescription(`Failed to ban <@${member.id}>. ${error}`)
+                        .setDescription(`Failed to ban <@${user.id}>. ${error}`)
                         .setColor(Colors.Red)
                         .setFooter({ text: "Guardsman Moderation" })
                         .setTimestamp()
@@ -110,17 +106,17 @@ export default class BanCommand implements ICommand
         await interaction.editReply({
             embeds: [
                 new EmbedBuilder()
-                        .setTitle("Guardsman Moderation")
-                        .setDescription(`${member.user.username} has been banned from the guild.`)
-                        .setColor(Colors.Red)
-                        .setFooter({ text: "Guardsman Moderation"})
-                        .setTimestamp()
-                        .addFields(
-                            {
-                                name: "Reason",
-                                value: banReason || "No Reason Provided"
-                            }
-                        )
+                    .setTitle("Guardsman Moderation")
+                    .setDescription(`${user.username} has been banned from the guild.`)
+                    .setColor(Colors.Green)
+                    .setFooter({ text: "Guardsman Moderation" })
+                    .setTimestamp()
+                    .addFields(
+                        {
+                            name: "Reason",
+                            value: banReason
+                        }
+                    )
             ]
         })
     }
