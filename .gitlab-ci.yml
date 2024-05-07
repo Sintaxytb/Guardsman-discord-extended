@@ -13,7 +13,7 @@ stages:
 compile:
   stage: build
   script:
-    - pnpm ci
+    - pnpm install
     - cp .env.example .env
     - pnpm run build
   artifacts:
