@@ -1,5 +1,11 @@
 image: node:latest
 
+default:
+  before_script:
+  - corepack enable
+  - corepack prepare pnpm@latest-9 --activate
+  - pnpm config set store-dir .pnpm-store
+
 stages:
   - build
   - run
