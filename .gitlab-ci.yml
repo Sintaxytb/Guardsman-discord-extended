@@ -13,9 +13,9 @@ stages:
 compile:
   stage: build
   script:
-    - npm ci
+    - pnpm ci
     - cp .env.example .env
-    - npm run build
+    - pnpm run build
   artifacts:
     paths:
       - node_modules
@@ -23,4 +23,4 @@ compile:
 testrun:
   stage: run
   script:
-    - npm run ci --if-present
+    - pnpm run ci --if-present
