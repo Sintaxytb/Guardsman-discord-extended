@@ -16,7 +16,7 @@ export default class PullCommand implements ICommand
 
     async execute(interaction: ChatInputCommandInteraction<"cached">): Promise<void>
     {
-        await interaction.reply("Pulling latest changes from GitHub...");
+        await interaction.reply("Pulling latest changes from Git...");
 
         exec("git pull", async (error, stdout, stderr) =>
         {
@@ -34,7 +34,7 @@ export default class PullCommand implements ICommand
                 return;
             }
 
-            await interaction.editReply("Updated!");
+            await interaction.editReply("Updated! Updating dependencies must be done manually at this time. Please make sure all dependencies are up-to-date before recompiling and restarting.");
         })
     }
 }
