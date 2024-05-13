@@ -52,18 +52,18 @@ For verification to work, the following values must be set:
 - `API_PORT`
 
 # Running the bot
-To deploy the bot to production, run `npm run build` to generate the minified files. Then, you may start the bot via `npm run start`.
+To deploy the bot to production, run `npm run start`. This will generate the minified files and run the bot.
 
 A good way to keep Guardsman up is to use a process manager like PM2. To install run the following commands:
 
 - `npm install -g pm2` (**linux users**, you may have to use sudo depending on how your node is installed)
 
-- `pm2 start "npm run build/src/index.js" --name "GuardsmanDiscord"`
+- `pm2 start "node build/src/index.js" --name "GuardsmanDiscord"`
 
 - `pm2 startup` (to start pm2 processes on boot)
 
 - `pm2 save` (to save the current process list which will let Guardsman start on boot)
 
-If you need to stop Guardsman, you can use `pm2 stop GuardsmanDiscord`. To restart, use `pm2 reload GuardsmanDiscord`. Make sure to build before restarting if you have made changes.
+If you need to stop Guardsman, you can use `pm2 stop GuardsmanDiscord`. To restart, use `pm2 reload GuardsmanDiscord`. Make sure to build(`npm run build`) before restarting if you have made changes.
 
 To run the bot in a development environment, run `npm run dev`.
