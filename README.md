@@ -6,29 +6,28 @@
 ---
 <img src="https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-discord-extended/badges/master/pipeline.svg" alt="Pipeline Status" />
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
 # Guardsman Discord Extended
 <p>Guardsman is Bunker Bravo's moderation and management suite. This component (guardsman-discord-extended) is responsible for providing a Discord management interface for partnered guilds and global Bunker Bravo moderators. </p>
 
 # Links
-[Bunker Bravo Interactive Discord Server](https://discord.gg/GdgZeZNuBe)
-[(INTERNAL) Guardsman Web Panel](https://guardsman.bunkerbravointeractive.com)
-[Guardsman Web Repository](https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-web)
+
 
 # Installation
 To install Guardsman Discord on your system, follow these steps:
 
 **NOTE: Guardsman Discord Extended has only been tested on linux and win32.**
 
-**NOTE: Guardsman Discord Extended REQUIRES a working Guardsman Web installation. Please follow the installation instructions for [Guardsman Web](https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-web).**
+**NOTE: Guardsman Discord Extended REQUIRES a working Guardsman Web installation. Please follow the installation instructions for [Guardsman Web](https://github.com/Sintaxytb/Guardsman-Web-Origin-Repo).**
 
-- Clone the [Guardsman Discord Extended](https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-discord-extended) repository. (ex: `git clone https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-discord-extended.git)`
+- Clone the [Guardsman Discord Extended](https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-discord-extended) repository. (ex: `git clone https://github.com/Sintaxytb/Guardsman-discord-extended/`
 
 - Install NPM dependencies with your package manager of choice (`npm install`, `pnpm install`, `yarn install`)
 
 - Copy `.env.example` to `.env` (`cp .env.example .env`)
 
-- Database migrations can be found in the [Guardsman Web](https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-web) repository. You **MUST** have a working Guardsman Web installation to run Guardsman Discord Extended.
+- Database migrations can be found in the [Guardsman Web](https://github.com/Sintaxytb/Guardsman-Web-Origin-Repo) repository. You **MUST** have a working Guardsman Web installation to run Guardsman Discord Extended.
 
 # Configuration
 The following configuration values **MUST** be set:
