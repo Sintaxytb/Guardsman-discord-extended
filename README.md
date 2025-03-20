@@ -4,7 +4,6 @@
 </div
 
 ---
-<img src="https://git.bunkerbravointeractive.com/bunker-bravo-interactive/guardsman-discord-extended/badges/master/pipeline.svg" alt="Pipeline Status" />
 
 [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
