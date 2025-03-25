@@ -6,6 +6,7 @@
 ---
 
 [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+[![img](https://img.shields.io/badge/We%20support-BlueHats-blue.svg)](https://bluehats.global)
 
 # Guardsman Discord Extended
 <p>Guardsman is Bunker Bravo's moderation and management suite. This component (guardsman-discord-extended) is responsible for providing a Discord management interface for partnered guilds and global Bunker Bravo moderators. </p>
