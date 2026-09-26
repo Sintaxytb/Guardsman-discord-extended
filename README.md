@@ -8,6 +8,29 @@
 [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 [![img](https://img.shields.io/badge/We%20support-BlueHats-blue.svg)](https://bluehats.global)
 
+
+---
+
+> [!WARNING]
+> ### Deprecation Notice & Repository Status
+> 
+> With the official release of **Guardsman V2**, this legacy project has been **deprecated**, and active development has **ceased**. 
+> 
+> This repository is a fork of the original codebase, created following the privatization of the primary upstream repository.
+> 
+> ---
+> 
+> #### Intellectual Property
+> All contents within this repository are the property of **Bunker Bravo LLC**.
+> 
+> #### Important Notes & Disclaimers
+> * **Not a Replacement:** This repository does not serve as a functional replacement for Guardsman V2.
+> * **Maintenance:** The codebase is unmaintained and contains deprecated components.
+> * **Source Code Availability:** Neither the frontend nor backend components of Guardsman V2 will be made open-source. As a result, this repository will not receive further feature updates or alignment with V2.
+> 
+> ---
+> 
+
 # Guardsman Discord Extended
 <p>Guardsman is Bunker Bravo's moderation and management suite. This component (guardsman-discord-extended) is responsible for providing a Discord management interface for partnered guilds and global Bunker Bravo moderators. </p>
 
